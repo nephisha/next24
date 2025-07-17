@@ -20,10 +20,24 @@
             "destination": "/api/robots"
         }
     ],
-    "env": {
-        "NEXT_PUBLIC_API_URL": "https://next24-production.up.railway.app",
-        "NEXT_PUBLIC_SITE_URL": "https://www.next24.xyz"
-    },
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "next24.xyz"
+                }
+            ],
+            "destination": "https://www.next24.xyz/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/search",
+            "destination": "/",
+            "permanent": false
+        }
+    ],
     "headers": [
         {
             "source": "/(.*)",
@@ -64,22 +78,8 @@
             ]
         }
     ],
-    "redirects": [
-        {
-            "source": "/(.*)",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "next24.xyz"
-                }
-            ],
-            "destination": "https://www.next24.xyz/:path*",
-            "permanent": true
-        },
-        {
-            "source": "/search",
-            "destination": "/",
-            "permanent": false
-        }
-    ]
+    "env": {
+        "NEXT_PUBLIC_API_URL": "https://next24-production.up.railway.app",
+        "NEXT_PUBLIC_SITE_URL": "https://www.next24.xyz"
+    }
 }
