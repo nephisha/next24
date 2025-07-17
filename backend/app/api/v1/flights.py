@@ -12,7 +12,7 @@ flight_service = FlightService()
 
 @router.post("/search", response_model=FlightSearchResponse)
 async def search_flights(
-    search_request: FlightSearchRequest, _: dict = Depends(validate_search_params())
+    search_request: FlightSearchRequest, _: dict = Depends(validate_search_params)
 ):
     """
     Search for last-minute flight deals

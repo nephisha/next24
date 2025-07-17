@@ -12,7 +12,7 @@ hotel_service = HotelService()
 
 @router.post("/search", response_model=HotelSearchResponse)
 async def search_hotels(
-    search_request: HotelSearchRequest, _: dict = Depends(validate_search_params())
+    search_request: HotelSearchRequest, _: dict = Depends(validate_search_params)
 ):
     """
     Search for last-minute hotel deals

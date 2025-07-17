@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     # CORS
     allowed_origins: list = [
         "http://localhost:3000",
-        "https://yourdomain.com",
+        "https://next24.xyz",
         "https://*.vercel.app",
     ]
 

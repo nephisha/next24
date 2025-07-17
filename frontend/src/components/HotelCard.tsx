@@ -4,7 +4,8 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { formatPrice } from '@/lib/utils'
 import type { Hotel } from '@/types'
-import { StarIcon, MapPinIcon, WifiIcon, CarIcon } from '@heroicons/react/24/solid'
+import { StarIcon, MapPinIcon, WifiIcon } from '@heroicons/react/24/solid'
+import { Car } from "lucide-react";
 
 interface HotelCardProps {
     hotel: Hotel
@@ -34,7 +35,7 @@ export default function HotelCard({ hotel, onSelect }: HotelCardProps) {
             return <WifiIcon className="h-4 w-4" />
         }
         if (name.includes('parking')) {
-            return <CarIcon className="h-4 w-4" />
+            return <Car className="h-5 w-5 text-gray-500" />
         }
         return null
     }
