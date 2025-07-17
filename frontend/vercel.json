@@ -73,7 +73,7 @@
                     "value": "next24.xyz"
                 }
             ],
-            "destination": "https://www.next24.xyz/:1",
+            "destination": "https://www.next24.xyz/:path*",
             "permanent": true
         },
         {
