@@ -6,10 +6,18 @@
             "use": "@vercel/next"
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "$BACKEND_URL/api/$1"
+            "source": "/api/:match*",
+            "destination": "https://next24-production.up.railway.app/api/:match*"
+        },
+        {
+            "source": "/sitemap.xml",
+            "destination": "/api/sitemap"
+        },
+        {
+            "source": "/robots.txt",
+            "destination": "/api/robots"
         }
     ],
     "env": {
@@ -61,16 +69,6 @@
             "source": "/search",
             "destination": "/",
             "permanent": false
-        }
-    ],
-    "rewrites": [
-        {
-            "source": "/sitemap.xml",
-            "destination": "/api/sitemap"
-        },
-        {
-            "source": "/robots.txt",
-            "destination": "/api/robots"
         }
     ]
 }
