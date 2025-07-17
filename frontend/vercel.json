@@ -66,14 +66,20 @@
     ],
     "redirects": [
         {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "next24.xyz"
+                }
+            ],
+            "destination": "https://www.next24.xyz/:1",
+            "permanent": true
+        },
+        {
             "source": "/search",
             "destination": "/",
             "permanent": false
-        },
-        {
-            "source": "https://next24.xyz",
-            "destination": "https://www.next24.xyz",
-            "permanent": true
         }
     ]
 }
