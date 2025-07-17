@@ -70,7 +70,7 @@ export default function FlightsPage() {
                         <div className="lg:col-span-3">
                             <SearchResults
                                 type="flights"
-                                results={searchResults}
+                                results={searchResults ?? undefined}
                                 isLoading={isLoading}
                                 error={searchError}
                             />

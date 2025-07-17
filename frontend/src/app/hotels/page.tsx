@@ -66,7 +66,7 @@ export default function HotelsPage() {
                         <div className="lg:col-span-3">
                             <SearchResults
                                 type="hotels"
-                                results={searchResults}
+                                results={searchResults ?? undefined}
                                 isLoading={isLoading}
                                 error={searchError}
                             />
