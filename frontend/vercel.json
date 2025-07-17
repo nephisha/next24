@@ -21,8 +21,8 @@
         }
     ],
     "env": {
-        "NEXT_PUBLIC_API_URL": "@next_public_api_url",
-        "NEXT_PUBLIC_SITE_URL": "@next_public_site_url"
+        "NEXT_PUBLIC_API_URL": "https://next24-production.up.railway.app",
+        "NEXT_PUBLIC_SITE_URL": "https://www.next24.xyz"
     },
     "headers": [
         {
@@ -69,6 +69,11 @@
             "source": "/search",
             "destination": "/",
             "permanent": false
+        },
+        {
+            "source": "https://next24.xyz",
+            "destination": "https://www.next24.xyz",
+            "permanent": true
         }
     ]
 }
