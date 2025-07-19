@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -41,6 +42,23 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
+            <head>
+                {/* Travelpayouts Verification Script */}
+                <Script
+                    id="travelpayouts-verification"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                (function () {
+                    var script = document.createElement("script");
+                    script.async = 1;
+                    script.src = 'https://tp-em.com/NDM5NDA2.js?t=439406';
+                    document.head.appendChild(script);
+                })();
+                `
+                    }}
+                />
+            </head>
             <body className={`${inter.className} bg-gray-50`}>
                 <div className="min-h-screen flex flex-col">
                     {children}
