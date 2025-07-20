@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -12,10 +13,14 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center">
-                        <div className="text-2xl font-bold text-primary-600">
-                            ⚡ LastMinute
-                        </div>
+                    <Link href="/" className="flex items-center space-x-2">
+                        <Image 
+                            src="/logo.svg" 
+                            alt="Next 24 Logo" 
+                            width={120} 
+                            height={40}
+                            className="h-10 w-auto"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}
