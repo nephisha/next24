@@ -96,7 +96,7 @@ export default function HotelCard({ hotel, onSelect }: HotelCardProps) {
                             {/* Review score */}
                             {hotel.review_score && (
                                 <div className="flex items-center text-sm mb-3">
-                                    <div className="bg-primary-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                    <div className="bg-primary text-white px-2 py-1 rounded text-xs font-medium">
                                         {hotel.review_score.toFixed(1)}
                                     </div>
                                     <span className="ml-2 text-gray-600">
@@ -154,7 +154,7 @@ export default function HotelCard({ hotel, onSelect }: HotelCardProps) {
                             </div>
                             <button
                                 onClick={handleBookNow}
-                                className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors font-medium w-full"
+                                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-secondary transition-colors font-medium w-full"
                             >
                                 Book Now
                             </button>

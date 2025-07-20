@@ -16,8 +16,8 @@ export default function SearchTabs({ activeTab, onTabChange }: SearchTabsProps) 
                 className={cn(
                     'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
                     activeTab === 'flights'
-                        ? 'bg-white text-primary-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'text-gray-600 hover:text-primary'
                 )}
             >
                 ✈️ Flights
@@ -27,8 +27,8 @@ export default function SearchTabs({ activeTab, onTabChange }: SearchTabsProps) 
                 className={cn(
                     'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
                     activeTab === 'hotels'
-                        ? 'bg-white text-primary-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'text-gray-600 hover:text-primary'
                 )}
             >
                 🏨 Hotels

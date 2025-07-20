@@ -60,7 +60,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         type="radio"
                         checked={!isRoundTrip}
                         onChange={() => setIsRoundTrip(false)}
-                        className="mr-2 text-primary-600"
+                        className="mr-2 text-primary"
                     />
                     <span>One way</span>
                 </label>
@@ -69,7 +69,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         type="radio"
                         checked={isRoundTrip}
                         onChange={() => setIsRoundTrip(true)}
-                        className="mr-2 text-primary-600"
+                        className="mr-2 text-primary"
                     />
                     <span>Round trip</span>
                 </label>
@@ -85,7 +85,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         {...register('origin')}
                         type="text"
                         placeholder="Origin (e.g., NYC)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                         maxLength={3}
                     />
                     {errors.origin && (
@@ -101,7 +101,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         {...register('destination')}
                         type="text"
                         placeholder="Destination (e.g., LON)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                         maxLength={3}
                     />
                     {errors.destination && (
@@ -118,7 +118,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </label>
                     <select
                         {...register('departure_date')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         <option value={today}>Today</option>
                         <option value={tomorrow}>Tomorrow</option>
@@ -132,7 +132,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         </label>
                         <select
                             {...register('return_date')}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                         >
                             <option value={tomorrow}>Tomorrow</option>
                             <option value={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>
@@ -151,7 +151,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </label>
                     <select
                         {...register('adults', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                             <option key={num} value={num}>{num}</option>
@@ -165,7 +165,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </label>
                     <select
                         {...register('children', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                             <option key={num} value={num}>{num}</option>
@@ -179,7 +179,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </label>
                     <select
                         {...register('infants', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                             <option key={num} value={num}>{num}</option>
@@ -196,7 +196,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </label>
                     <select
                         {...register('cabin_class')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         <option value="economy">Economy</option>
                         <option value="premium_economy">Premium Economy</option>
@@ -213,7 +213,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         {...register('max_price', { valueAsNumber: true })}
                         type="number"
                         placeholder="No limit"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     />
                 </div>
             </div>
@@ -223,7 +223,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                 <input
                     {...register('direct_flights_only')}
                     type="checkbox"
-                    className="mr-2 text-primary-600"
+                    className="mr-2 text-primary"
                 />
                 <label className="text-sm text-gray-700">
                     Direct flights only
@@ -234,7 +234,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-primary-600 text-white py-3 px-4 rounded-md hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-secondary focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
                 {isLoading ? (
                     <div className="flex items-center justify-center">

@@ -52,7 +52,7 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
                             placeholder="No limit"
                             value={filters.maxPrice}
                             onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                         />
                     </div>
 
@@ -66,7 +66,7 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
                                 <select
                                     value={filters.stops}
                                     onChange={(e) => updateFilter('stops', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                 >
                                     <option value="any">Any number of stops</option>
                                     <option value="0">Direct flights only</option>
@@ -82,7 +82,7 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
                                 <select
                                     value={filters.departure_time}
                                     onChange={(e) => updateFilter('departure_time', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                 >
                                     <option value="any">Any time</option>
                                     <option value="morning">Morning (6AM - 12PM)</option>
@@ -103,7 +103,7 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
                                 <select
                                     value={filters.rating}
                                     onChange={(e) => updateFilter('rating', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                 >
                                     <option value="">Any rating</option>
                                     <option value="3">3+ stars</option>
@@ -122,7 +122,7 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
                                         <label key={amenity} className="flex items-center">
                                             <input
                                                 type="checkbox"
-                                                className="mr-2 text-primary-600"
+                                                className="mr-2 text-primary"
                                                 onChange={(e) => {
                                                     const current = filters.amenities
                                                     if (e.target.checked) {
@@ -154,7 +154,7 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
                             setFilters(emptyFilters)
                             onFiltersChange(emptyFilters)
                         }}
-                        className="w-full text-sm text-primary-600 hover:text-primary-700 py-2"
+                        className="w-full text-sm text-primary hover:text-secondary py-2"
                     >
                         Clear all filters
                     </button>

@@ -55,7 +55,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     {...register('destination')}
                     type="text"
                     placeholder="City or hotel name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                 />
                 {errors.destination && (
                     <p className="mt-1 text-sm text-red-600">{errors.destination.message}</p>
@@ -70,7 +70,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     </label>
                     <select
                         {...register('check_in')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         <option value={today}>Today</option>
                         <option value={tomorrow}>Tomorrow</option>
@@ -83,7 +83,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     </label>
                     <select
                         {...register('check_out')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         <option value={tomorrow}>Tomorrow</option>
                         <option value={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>
@@ -104,7 +104,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     </label>
                     <select
                         {...register('adults', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         {[1, 2, 3, 4, 5, 6].map(num => (
                             <option key={num} value={num}>{num}</option>
@@ -118,7 +118,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     </label>
                     <select
                         {...register('children', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         {[0, 1, 2, 3, 4].map(num => (
                             <option key={num} value={num}>{num}</option>
@@ -132,7 +132,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     </label>
                     <select
                         {...register('rooms', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         {[1, 2, 3, 4].map(num => (
                             <option key={num} value={num}>{num}</option>
@@ -151,7 +151,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                         {...register('max_price', { valueAsNumber: true })}
                         type="number"
                         placeholder="No limit"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     />
                 </div>
 
@@ -161,7 +161,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
                     </label>
                     <select
                         {...register('min_rating', { valueAsNumber: true })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                     >
                         <option value="">Any rating</option>
                         <option value="3">3+ stars</option>
@@ -175,7 +175,7 @@ export default function HotelSearchForm({ onSearch, isLoading = false }: HotelSe
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-primary-600 text-white py-3 px-4 rounded-md hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-secondary focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
                 {isLoading ? (
                     <div className="flex items-center justify-center">

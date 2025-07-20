@@ -81,7 +81,7 @@ export default function FlightCard({ flight, onSelect }: FlightCardProps) {
                         </div>
                         <button
                             onClick={handleBookNow}
-                            className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors font-medium"
+                            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-secondary transition-colors font-medium w-full"
                         >
                             Book Now
                         </button>
@@ -95,7 +95,7 @@ export default function FlightCard({ flight, onSelect }: FlightCardProps) {
                     </div>
                     <button
                         onClick={() => setShowDetails(!showDetails)}
-                        className="flex items-center text-sm text-primary-600 hover:text-primary-700"
+                        className="flex items-center text-sm text-primary hover:text-secondary"
                     >
                         Flight details
                         {showDetails ? (

@@ -10,14 +10,14 @@ export default function Header() {
 
     return (
         <header className="bg-white shadow-sm border-b border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto pl-0 pr-4 sm:pl-0 sm:pr-6 lg:pl-0 lg:pr-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2">
-                        <Image 
-                            src="/next24-logo.png" 
-                            alt="Next 24 Logo" 
-                            width={200} 
+                        <Image
+                            src="/next24_logo.png"
+                            alt="Next 24 Logo"
+                            width={200}
                             height={60}
                             className="h-12 w-auto"
                             priority
@@ -28,25 +28,25 @@ export default function Header() {
                     <nav className="hidden md:flex items-center space-x-8">
                         <Link
                             href="/flights"
-                            className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
+                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
                         >
                             Flights
                         </Link>
                         <Link
                             href="/hotels"
-                            className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
+                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
                         >
                             Hotels
                         </Link>
                         <Link
                             href="/about"
-                            className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
+                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
                         >
                             About
                         </Link>
                         <Link
                             href="/contact"
-                            className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
+                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
                         >
                             Contact
                         </Link>
@@ -73,28 +73,28 @@ export default function Header() {
                         <div className="flex flex-col space-y-3">
                             <Link
                                 href="/flights"
-                                className="text-gray-700 hover:text-primary-600 px-3 py-2 text-base font-medium"
+                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 Flights
                             </Link>
                             <Link
                                 href="/hotels"
-                                className="text-gray-700 hover:text-primary-600 px-3 py-2 text-base font-medium"
+                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 Hotels
                             </Link>
                             <Link
                                 href="/about"
-                                className="text-gray-700 hover:text-primary-600 px-3 py-2 text-base font-medium"
+                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 About
                             </Link>
                             <Link
                                 href="/contact"
-                                className="text-gray-700 hover:text-primary-600 px-3 py-2 text-base font-medium"
+                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 Contact
