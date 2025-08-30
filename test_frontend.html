@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LastMinute Travel - Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <h1 class="text-2xl font-bold text-gray-900">⚡ LastMinute Travel</h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 py-8">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-xl font-semibold mb-6">Flight Search</h2>
+                    
+                    <!-- Search Form -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">From</label>
+                            <input type="text" id="origin" value="NYC" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">To</label>
+                            <input type="text" id="destination" value="LAX" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Departure</label>
+                            <input type="date" id="departure_date" value="2025-08-31" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Adults</label>
+                            <select id="adults" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">1 Adult</option>
+                                <option value="2">2 Adults</option>
+                                <option value="3">3 Adults</option>
+                                <option value="4">4 Adults</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="searchFlights()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        Search Flights
+                    </button>
+
+                    <!-- Loading -->
+                    <div id="loading" class="hidden mt-6 text-center">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <p class="mt-2 text-gray-600">Searching flights...</p>
+                    </div>
+
+                    <!-- Results -->
+                    <div id="results" class="mt-8 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Flight Results</h3>
+                        <div id="flights-container" class="space-y-4"></div>
+                    </div>
+
+                    <!-- Error -->
+                    <div id="error" class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-red-800" id="error-message"></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function searchFlights() {
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const departure_date = document.getElementById('departure_date').value;
+            const adults = document.getElementById('adults').value;
+
+            // Show loading
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+
+            const apiUrl = `http://localhost:8000/api/v1/flights/search?origin=${origin}&destination=${destination}&departure_date=${departure_date}&adults=${adults}`;
+            console.log('Making request to:', apiUrl);
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors'
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                // Hide loading
+                document.getElementById('loading').classList.add('hidden');
+                
+                // Show results
+                if (data.flights && data.flights.length > 0) {
+                    displayFlights(data.flights);
+                    document.getElementById('results').classList.remove('hidden');
+                } else {
+                    throw new Error('No flights found');
+                }
+                
+            } catch (error) {
+                console.error('Detailed error:', error);
+                document.getElementById('loading').classList.add('hidden');
+                
+                let errorMessage = error.message;
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage = 'Cannot connect to backend API. Make sure the backend is running on http://localhost:8000';
+                }
+                
+                document.getElementById('error-message').textContent = `Error: ${errorMessage}`;
+                document.getElementById('error').classList.remove('hidden');
+            }
+        }
+
+        function displayFlights(flights) {
+            const container = document.getElementById('flights-container');
+            container.innerHTML = '';
+
+            flights.forEach(flight => {
+                const flightCard = document.createElement('div');
+                flightCard.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow';
+                
+                const airline = flight.segments[0].airline;
+                const departure = flight.segments[0];
+                const arrival = flight.segments[flight.segments.length - 1];
+                
+                flightCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-4 mb-2">
+                                <div class="font-semibold text-lg">${airline.name}</div>
+                                <div class="text-sm text-gray-500">${departure.flight_number}</div>
+                                <div class="text-sm text-gray-500">${flight.stops === 0 ? 'Direct' : flight.stops + ' stop(s)'}</div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4 text-sm">
+                                <div>
+                                    <div class="font-medium">${new Date(departure.departure_time).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}</div>
+                                    <div class="text-gray-500">${departure.origin.code}</div>
+                                </div>
+                                <div class="flex-1 text-center">
+                                    <div class="text-gray-400">→</div>
+                                    <div class="text-xs text-gray-500">${Math.floor(flight.total_duration_minutes / 60)}h ${flight.total_duration_minutes % 60}m</div>
+                                </div>
+                                <div>
+                                    <div class="font-medium">${new Date(arrival.arrival_time).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}</div>
+                                    <div class="text-gray-500">${arrival.destination.code}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right ml-4">
+                            <div class="text-2xl font-bold text-green-600">$${flight.price}</div>
+                            <div class="text-sm text-gray-500">${flight.currency}</div>
+                            <button onclick="window.open('${flight.deep_link}', '_blank')" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(flightCard);
+            });
+        }
+    </script>
+</body>
+</html>

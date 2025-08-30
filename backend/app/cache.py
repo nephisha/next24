@@ -13,6 +13,10 @@ class RedisCache:
         self.redis_client = None
 
     async def connect(self):
+        if not settings.redis_url:
+            logger.warning("Redis URL not configured - caching disabled")
+            self.redis_client = None
+            return
         try:
             self.redis_client = redis.from_url(
                 settings.redis_url, encoding="utf-8", decode_responses=True

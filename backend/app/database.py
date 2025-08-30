@@ -11,6 +11,11 @@ class SupabaseClient:
     @classmethod
     def get_client(cls) -> Client:
         if cls._instance is None:
+            if not settings.supabase_url or not settings.supabase_anon_key:
+                logger.warning(
+                    "Supabase credentials not configured - database features disabled"
+                )
+                return None
             try:
                 cls._instance = create_client(
                     settings.supabase_url, settings.supabase_anon_key
@@ -18,7 +23,7 @@ class SupabaseClient:
                 logger.info("Supabase client initialized successfully")
             except Exception as e:
                 logger.error(f"Failed to initialize Supabase client: {e}")
-                raise
+                return None
         return cls._instance
 
 

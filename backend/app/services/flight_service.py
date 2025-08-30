@@ -3,7 +3,12 @@ import time
 import uuid
 from typing import List, Set
 from app.models.flights import FlightSearchRequest, FlightSearchResponse, Flight
-from app.integrations import KiwiAPI, SkyscannerAPI
+from app.integrations import KiwiAPI, SkyscannerAPI, AviasalesAPI
+from app.integrations.amadeus_api import AmadeusAPI
+from app.integrations.mock_flight_api import MockFlightAPI
+from app.integrations.serpapi_flights import SerpAPIFlights
+from app.integrations.travelpayouts_api import TravelpayoutsAPI
+from app.config import settings
 from app.services.cache_service import CacheService
 from app.database import supabase
 import logging
@@ -15,6 +20,11 @@ class FlightService:
     def __init__(self):
         self.kiwi_api = KiwiAPI()
         self.skyscanner_api = SkyscannerAPI()
+        self.aviasales_api = AviasalesAPI()
+        self.amadeus_api = AmadeusAPI()
+        self.serpapi_flights = SerpAPIFlights()
+        self.travelpayouts_api = TravelpayoutsAPI()
+        self.mock_api = MockFlightAPI()
         self.cache_service = CacheService()
 
     async def search_flights(
@@ -42,30 +52,71 @@ class FlightService:
         all_flights = []
 
         try:
-            # Run API calls concurrently
-            tasks = []
+            # Use mock data for development if enabled
+            if settings.use_mock_data:
+                logger.info("Using mock flight data for development")
+                all_flights = await self.mock_api.search_flights(search_request)
+                providers_used = ["MockAPI"]
+            else:
+                # Run API calls concurrently
+                tasks = []
 
-            # Kiwi.com
-            tasks.append(self._search_kiwi(search_request))
-            providers_used.append("Kiwi")
+                # Priority order: Google Flights > Amadeus > Others
 
-            # Skyscanner (if API key available)
-            if hasattr(self.skyscanner_api, "api_key") and self.skyscanner_api.api_key:
-                tasks.append(self._search_skyscanner(search_request))
-                providers_used.append("Skyscanner")
+                # SerpAPI Google Flights (highest priority - real Google Flights data)
+                if settings.serpapi_key:
+                    tasks.append(self._search_serpapi(search_request))
+                    providers_used.append("Google Flights (SerpAPI)")
 
-            # Execute all searches concurrently with timeout
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+                # Travelpayouts (official airline partnerships)
+                if settings.travelpayouts_token:
+                    tasks.append(self._search_travelpayouts(search_request))
+                    providers_used.append("Travelpayouts")
 
-            # Collect results from successful searches
-            for i, result in enumerate(results):
-                if isinstance(result, list):
-                    all_flights.extend(result)
-                    logger.info(
-                        f"Provider {providers_used[i]} returned {len(result)} flights"
-                    )
+                # Amadeus (preferred - most reliable)
+                if settings.amadeus_client_id and settings.amadeus_client_secret:
+                    tasks.append(self._search_amadeus(search_request))
+                    providers_used.append("Amadeus")
+
+                # Kiwi.com (fallback)
+                if settings.kiwi_api_key:
+                    tasks.append(self._search_kiwi(search_request))
+                    providers_used.append("Kiwi")
+
+                # Add other providers
+                if settings.skyscanner_api_key:
+                    tasks.append(self._search_skyscanner(search_request))
+                    providers_used.append("Skyscanner")
+
+                if settings.aviasales_api_token:
+                    tasks.append(self._search_aviasales(search_request))
+                    providers_used.append("Aviasales")
+
+                # Always add mock as fallback to ensure we have results
+                if not tasks or len(tasks) == 0:
+                    tasks.append(self._search_mock(search_request))
+                    providers_used.append("MockAPI (Fallback)")
+
+                # Execute all searches concurrently with timeout
+                if tasks:
+                    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+                    # Collect results from successful searches
+                    for i, result in enumerate(results):
+                        if isinstance(result, list):
+                            all_flights.extend(result)
+                            logger.info(
+                                f"Provider {providers_used[i]} returned {len(result)} flights"
+                            )
+                        else:
+                            logger.error(
+                                f"Provider {providers_used[i]} failed: {result}"
+                            )
                 else:
-                    logger.error(f"Provider {providers_used[i]} failed: {result}")
+                    # No API keys configured, use mock data
+                    logger.warning("No flight API keys configured, using mock data")
+                    all_flights = await self.mock_api.search_flights(search_request)
+                    providers_used = ["MockAPI"]
 
             # Remove duplicates and sort by price
             unique_flights = self._deduplicate_flights(all_flights)
@@ -127,6 +178,54 @@ class FlightService:
             return await self.skyscanner_api.search_flights(search_request)
         except Exception as e:
             logger.error(f"Skyscanner API search failed: {e}")
+            return []
+
+    async def _search_aviasales(
+        self, search_request: FlightSearchRequest
+    ) -> List[Flight]:
+        """Search flights using Aviasales API"""
+        try:
+            return await self.aviasales_api.search_flights(search_request)
+        except Exception as e:
+            logger.error(f"Aviasales API search failed: {e}")
+            return []
+
+    async def _search_amadeus(
+        self, search_request: FlightSearchRequest
+    ) -> List[Flight]:
+        """Search flights using Amadeus API"""
+        try:
+            return await self.amadeus_api.search_flights(search_request)
+        except Exception as e:
+            logger.error(f"Amadeus API search failed: {e}")
+            return []
+
+    async def _search_serpapi(
+        self, search_request: FlightSearchRequest
+    ) -> List[Flight]:
+        """Search flights using SerpAPI Google Flights"""
+        try:
+            return await self.serpapi_flights.search_flights(search_request)
+        except Exception as e:
+            logger.error(f"SerpAPI Google Flights search failed: {e}")
+            return []
+
+    async def _search_travelpayouts(
+        self, search_request: FlightSearchRequest
+    ) -> List[Flight]:
+        """Search flights using Travelpayouts API"""
+        try:
+            return await self.travelpayouts_api.search_flights(search_request)
+        except Exception as e:
+            logger.error(f"Travelpayouts API search failed: {e}")
+            return []
+
+    async def _search_mock(self, search_request: FlightSearchRequest) -> List[Flight]:
+        """Search flights using Mock API (fallback)"""
+        try:
+            return await self.mock_api.search_flights(search_request)
+        except Exception as e:
+            logger.error(f"Mock API search failed: {e}")
             return []
 
     def _deduplicate_flights(self, flights: List[Flight]) -> List[Flight]:
@@ -196,7 +295,10 @@ class FlightService:
                 "created_at": "now()",
             }
 
-            await supabase.table("search_logs").insert(search_log).execute()
+            if supabase:
+                await supabase.table("search_logs").insert(search_log).execute()
+            else:
+                logger.info("Database not configured - search logging disabled")
 
         except Exception as e:
             logger.error(f"Failed to log search: {e}")

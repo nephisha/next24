@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick API Test</title>
+</head>
+<body>
+    <h1>Quick API Test</h1>
+    <button onclick="testAPI()">Test Flight Search API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/flights/search?origin=NYC&destination=LAX&departure_date=2025-08-31&adults=1');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h2>✅ Success!</h2>
+                    <p>Found ${data.flights.length} flights</p>
+                    <p>Search time: ${data.search_time_ms}ms</p>
+                    <p>Provider: ${data.providers.join(', ')}</p>
+                    <h3>First flight:</h3>
+                    <pre>${JSON.stringify(data.flights[0], null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<h2>❌ Error:</h2><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
