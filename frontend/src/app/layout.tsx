@@ -6,31 +6,31 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'LastMinute Travel - Find Same-Day Flight & Hotel Deals',
-    description: 'Discover unbeatable last-minute travel deals. Search and compare same-day and next-day flights and hotels across multiple providers.',
-    keywords: 'last minute travel, same day flights, hotel deals, travel search, flight booking',
-    authors: [{ name: 'LastMinute Travel' }],
+    title: 'Next24 - Compare Flights from 600+ Airlines Worldwide',
+    description: 'Search and compare flights from 600+ airlines worldwide with real-time prices in your local currency. Find your perfect flight deal with Next24.',
+    keywords: 'Next24, flight search, compare flights, airline tickets, flight booking, travel search, flight deals, cheap flights',
+    authors: [{ name: 'Next24' }],
     viewport: 'width=device-width, initial-scale=1',
     robots: 'index, follow',
     openGraph: {
-        title: 'LastMinute Travel - Same-Day Flight & Hotel Deals',
-        description: 'Find unbeatable last-minute travel deals with our metasearch engine',
+        title: 'Next24 - Compare Flights from 600+ Airlines',
+        description: 'Search and compare flights from 600+ airlines worldwide with real-time prices in your local currency',
         url: process.env.NEXT_PUBLIC_SITE_URL,
-        siteName: 'LastMinute Travel',
+        siteName: 'Next24',
         type: 'website',
         images: [
             {
                 url: '/og-image.jpg',
                 width: 1200,
                 height: 630,
-                alt: 'LastMinute Travel',
+                alt: 'Next24 - Compare Flights Worldwide',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'LastMinute Travel - Same-Day Flight & Hotel Deals',
-        description: 'Find unbeatable last-minute travel deals',
+        title: 'Next24 - Compare Flights from 600+ Airlines',
+        description: 'Search and compare flights worldwide with real-time prices - Next24',
         images: ['/og-image.jpg'],
     },
 }
