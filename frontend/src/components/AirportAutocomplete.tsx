@@ -208,16 +208,16 @@ export default function AirportAutocomplete({ value, onChange, placeholder, erro
                     onChange={handleInputChange}
                     onFocus={handleFocus}
                     placeholder={placeholder}
-                    className={`w-full px-3 py-2 border rounded-md focus:ring-primary focus:border-primary uppercase ${error ? 'border-red-300' : 'border-gray-300'
+                    className={`w-full px-2 py-1.5 text-xs border rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 uppercase transition-all duration-300 bg-gray-50 focus:bg-white placeholder:text-xs placeholder:text-gray-400 ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200'
                         }`}
                     maxLength={50}
                     style={{ textTransform: 'uppercase' }}
                 />
-                <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400 pointer-events-none" />
             </div>
 
             {error && (
-                <p className="mt-1 text-sm text-red-600">{error}</p>
+                <p className="mt-0.5 text-xs text-red-600 font-medium">{error}</p>
             )}
 
             {/* Dropdown */}
