@@ -6,17 +6,20 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Format price with 3-character currency code (e.g., "1,234 USD" instead of "$1,234")
 export function formatPrice(price: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
+  const formattedNumber = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(price)
+
+  return `${formattedNumber} ${currency}`
 }
 
 export function formatDuration(minutes: number): string {
   const hours = Math.floor(minutes / 60)
   const mins = minutes % 60
-  
+
   if (hours === 0) return `${mins}m`
   if (mins === 0) return `${hours}h`
   return `${hours}h ${mins}m`
@@ -40,7 +43,7 @@ export function getTodayAndTomorrow() {
   const today = new Date()
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
-  
+
   return {
     today: format(today, 'yyyy-MM-dd'),
     tomorrow: format(tomorrow, 'yyyy-MM-dd'),
@@ -51,7 +54,7 @@ export function getDateLimits() {
   const today = new Date()
   const maxDate = new Date(today)
   maxDate.setDate(maxDate.getDate() + 330) // ~11 months like Google Flights
-  
+
   return {
     minDate: format(today, 'yyyy-MM-dd'),
     maxDate: format(maxDate, 'yyyy-MM-dd'),

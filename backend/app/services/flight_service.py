@@ -34,6 +34,10 @@ class FlightService:
         start_time = time.time()
         search_id = str(uuid.uuid4())
 
+        # Normalize airport codes to uppercase for case-insensitive handling
+        search_request.origin = search_request.origin.upper()
+        search_request.destination = search_request.destination.upper()
+
         # Check cache first
         cached_response = await self.cache_service.get_flight_results(search_request)
         if cached_response:

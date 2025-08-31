@@ -16,6 +16,162 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# Airport code to currency mapping for SerpAPI
+AIRPORT_CURRENCY_MAP = {
+    # United States
+    "JFK": "USD",
+    "LAX": "USD",
+    "ORD": "USD",
+    "MIA": "USD",
+    "SFO": "USD",
+    "LAS": "USD",
+    "SEA": "USD",
+    "DEN": "USD",
+    "ATL": "USD",
+    "DFW": "USD",
+    "PHX": "USD",
+    "IAH": "USD",
+    "BOS": "USD",
+    "MSP": "USD",
+    "DTW": "USD",
+    "PHL": "USD",
+    "LGA": "USD",
+    "BWI": "USD",
+    "DCA": "USD",
+    "IAD": "USD",
+    # United Kingdom
+    "LHR": "GBP",
+    "LGW": "GBP",
+    "STN": "GBP",
+    "LTN": "GBP",
+    "MAN": "GBP",
+    "EDI": "GBP",
+    "GLA": "GBP",
+    "BHX": "GBP",
+    "NCL": "GBP",
+    # Eurozone
+    "CDG": "EUR",
+    "ORY": "EUR",  # France
+    "FRA": "EUR",
+    "MUC": "EUR",
+    "DUS": "EUR",
+    "BER": "EUR",  # Germany
+    "AMS": "EUR",  # Netherlands
+    "MAD": "EUR",
+    "BCN": "EUR",  # Spain
+    "FCO": "EUR",
+    "MXP": "EUR",
+    "LIN": "EUR",  # Italy
+    "VIE": "EUR",  # Austria
+    "BRU": "EUR",  # Belgium
+    "LIS": "EUR",  # Portugal
+    "ATH": "EUR",  # Greece
+    "DUB": "EUR",  # Ireland
+    "HEL": "EUR",  # Finland
+    # Non-Eurozone Europe
+    "ZUR": "CHF",  # Switzerland
+    "CPH": "DKK",  # Denmark
+    "ARN": "SEK",
+    "GOT": "SEK",  # Sweden
+    "OSL": "NOK",  # Norway
+    # Asia Pacific
+    "NRT": "JPY",
+    "HND": "JPY",
+    "KIX": "JPY",  # Japan
+    "ICN": "KRW",
+    "GMP": "KRW",  # South Korea
+    "PVG": "CNY",
+    "PEK": "CNY",
+    "CAN": "CNY",
+    "SZX": "CNY",  # China
+    "HKG": "HKD",  # Hong Kong
+    "TPE": "TWD",  # Taiwan
+    "SIN": "SGD",  # Singapore
+    "BKK": "THB",
+    "DMK": "THB",  # Thailand
+    "KUL": "MYR",
+    "PEN": "MYR",  # Malaysia
+    "CGK": "IDR",
+    "DPS": "IDR",  # Indonesia
+    "MNL": "PHP",  # Philippines
+    "SYD": "AUD",
+    "MEL": "AUD",
+    "BNE": "AUD",
+    "PER": "AUD",
+    "ADL": "AUD",  # Australia
+    "AKL": "NZD",
+    "CHC": "NZD",  # New Zealand
+    # India
+    "DEL": "INR",
+    "BOM": "INR",
+    "MAA": "INR",
+    "BLR": "INR",
+    "HYD": "INR",
+    "CCU": "INR",
+    "COK": "INR",
+    "GOI": "INR",
+    "AMD": "INR",
+    "PNQ": "INR",
+    # Middle East
+    "DXB": "AED",
+    "AUH": "AED",  # UAE
+    "DOH": "QAR",  # Qatar
+    "KWI": "KWD",  # Kuwait
+    "RUH": "SAR",
+    "JED": "SAR",
+    "DMM": "SAR",  # Saudi Arabia
+    "BAH": "BHD",  # Bahrain
+    "MCT": "OMR",  # Oman
+    "IST": "TRY",
+    "SAW": "TRY",  # Turkey
+    "TLV": "ILS",  # Israel
+    # Canada
+    "YYZ": "CAD",
+    "YVR": "CAD",
+    "YUL": "CAD",
+    "YYC": "CAD",
+    "YOW": "CAD",
+    # South America
+    "GRU": "BRL",
+    "GIG": "BRL",
+    "BSB": "BRL",  # Brazil
+    "EZE": "ARS",
+    "AEP": "ARS",  # Argentina
+    "SCL": "CLP",  # Chile
+    "LIM": "PEN",  # Peru
+    "BOG": "COP",  # Colombia
+    "UIO": "USD",  # Ecuador (uses USD)
+    # Africa
+    "CAI": "EGP",  # Egypt
+    "JNB": "ZAR",
+    "CPT": "ZAR",
+    "DUR": "ZAR",  # South Africa
+    "LOS": "NGN",
+    "ABV": "NGN",  # Nigeria
+    "ADD": "ETB",  # Ethiopia
+    "NBO": "KES",  # Kenya
+    "CMN": "MAD",
+    "RAK": "MAD",  # Morocco
+    # Eastern Europe
+    "SVO": "RUB",
+    "DME": "RUB",
+    "VKO": "RUB",  # Russia
+    "WAW": "PLN",
+    "KRK": "PLN",  # Poland
+    "PRG": "CZK",  # Czech Republic
+    "BUD": "HUF",  # Hungary
+    "OTP": "RON",  # Romania
+    "SOF": "BGN",  # Bulgaria
+    "ZAG": "HRK",  # Croatia
+    "BEG": "RSD",  # Serbia
+}
+
+
+def get_airport_currency(airport_code: str) -> str:
+    """Get the currency for an airport code"""
+    return AIRPORT_CURRENCY_MAP.get(airport_code.upper(), "USD")
+
+
 class SerpAPIFlights:
     """
     SerpAPI Google Flights integration
@@ -78,22 +234,63 @@ class SerpAPIFlights:
         self, search_request: FlightSearchRequest
     ) -> Dict[str, Any]:
         """Build SerpAPI parameters for Google Flights search"""
+        # Normalize airport codes to uppercase for case-insensitive handling
+        origin_code = search_request.origin.upper()
+        destination_code = search_request.destination.upper()
+
         # Map common city codes to specific airport codes for SerpAPI
         airport_mapping = {
             "NYC": "JFK",  # Use JFK for New York
-            "LAX": "LAX",  # LAX is fine
             "CHI": "ORD",  # Use ORD for Chicago
-            "MIA": "MIA",  # MIA is fine
-            "SFO": "SFO",  # SFO is fine
-            "LAS": "LAS",  # LAS is fine
-            "SEA": "SEA",  # SEA is fine
-            "DEN": "DEN",  # DEN is fine
+            "WAS": "DCA",  # Use DCA for Washington
+            "LON": "LHR",  # Use LHR for London
+            "PAR": "CDG",  # Use CDG for Paris
+            "TOK": "NRT",  # Use NRT for Tokyo
+            "BER": "BER",  # Use BER for Berlin
+            "ROM": "FCO",  # Use FCO for Rome
+            "MIL": "MXP",  # Use MXP for Milan
+            "BAR": "BCN",  # Use BCN for Barcelona
+            "MAD": "MAD",  # MAD is fine for Madrid
+            "AMS": "AMS",  # AMS is fine for Amsterdam
+            "FRA": "FRA",  # FRA is fine for Frankfurt
+            "ZUR": "ZUR",  # ZUR is fine for Zurich
+            "VIE": "VIE",  # VIE is fine for Vienna
+            "CPH": "CPH",  # CPH is fine for Copenhagen
+            "STO": "ARN",  # Use ARN for Stockholm
+            "OSL": "OSL",  # OSL is fine for Oslo
+            "HEL": "HEL",  # HEL is fine for Helsinki
+            "DUB": "DUB",  # DUB is fine for Dublin
+            "EDI": "EDI",  # EDI is fine for Edinburgh
+            "MAN": "MAN",  # MAN is fine for Manchester
+            "BRU": "BRU",  # BRU is fine for Brussels
+            "LIS": "LIS",  # LIS is fine for Lisbon
+            "ATH": "ATH",  # ATH is fine for Athens
+            "IST": "IST",  # IST is fine for Istanbul
+            "MOW": "SVO",  # Use SVO for Moscow
+            "LED": "LED",  # LED is fine for St. Petersburg
+            "WAW": "WAW",  # WAW is fine for Warsaw
+            "PRG": "PRG",  # PRG is fine for Prague
+            "BUD": "BUD",  # BUD is fine for Budapest
+            "BUH": "OTP",  # Use OTP for Bucharest
+            "SOF": "SOF",  # SOF is fine for Sofia
+            "ZAG": "ZAG",  # ZAG is fine for Zagreb
+            "BEG": "BEG",  # BEG is fine for Belgrade
+            "SKP": "SKP",  # SKP is fine for Skopje
+            "TIA": "TIA",  # TIA is fine for Tirana
+            "LJU": "LJU",  # LJU is fine for Ljubljana
+            "SJJ": "SJJ",  # SJJ is fine for Sarajevo
+            "DBV": "DBV",  # DBV is fine for Dubrovnik
+            "SPU": "SPU",  # SPU is fine for Split
+            "PUY": "PUY",  # PUY is fine for Pula
+            "RJK": "RJK",  # RJK is fine for Rijeka
+            "ZAD": "ZAD",  # ZAD is fine for Zadar
         }
 
-        origin = airport_mapping.get(search_request.origin, search_request.origin)
-        destination = airport_mapping.get(
-            search_request.destination, search_request.destination
-        )
+        origin = airport_mapping.get(origin_code, origin_code)
+        destination = airport_mapping.get(destination_code, destination_code)
+
+        # Get currency based on origin airport
+        origin_currency = get_airport_currency(origin)
 
         params = {
             "engine": "google_flights",
@@ -101,7 +298,7 @@ class SerpAPIFlights:
             "arrival_id": destination,
             "outbound_date": search_request.departure_date.strftime("%Y-%m-%d"),
             "adults": str(search_request.adults),  # Convert to string
-            "currency": "USD",
+            "currency": origin_currency,  # Use origin country currency
             "hl": "en",
             "api_key": self.api_key,
         }
@@ -165,7 +362,8 @@ class SerpAPIFlights:
         try:
             # Extract basic flight info
             price = flight_data.get("price", 0)
-            currency = "USD"
+            # Use currency based on origin airport (same as what we sent to SerpAPI)
+            currency = get_airport_currency(search_request.origin)
 
             # Extract total duration
             total_duration = flight_data.get("total_duration", 0)

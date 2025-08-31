@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { getDateLimits } from '@/lib/utils'
+import AirportAutocomplete from './AirportAutocomplete'
 import type { FlightSearchParams } from '@/types'
 
 const flightSearchSchema = z.object({
@@ -104,34 +105,24 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         From
                     </label>
-                    <input
-                        {...register('origin')}
-                        type="text"
-                        placeholder="NYC, LAX, SFO..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary uppercase"
-                        maxLength={3}
-                        style={{ textTransform: 'uppercase' }}
+                    <AirportAutocomplete
+                        value={watch('origin') || ''}
+                        onChange={(code) => setValue('origin', code)}
+                        placeholder="Search city or airport code..."
+                        error={errors.origin?.message}
                     />
-                    {errors.origin && (
-                        <p className="mt-1 text-sm text-red-600">{errors.origin.message}</p>
-                    )}
                 </div>
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         To
                     </label>
-                    <input
-                        {...register('destination')}
-                        type="text"
-                        placeholder="LAX, NYC, MIA..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary uppercase"
-                        maxLength={3}
-                        style={{ textTransform: 'uppercase' }}
+                    <AirportAutocomplete
+                        value={watch('destination') || ''}
+                        onChange={(code) => setValue('destination', code)}
+                        placeholder="Search city or airport code..."
+                        error={errors.destination?.message}
                     />
-                    {errors.destination && (
-                        <p className="mt-1 text-sm text-red-600">{errors.destination.message}</p>
-                    )}
                 </div>
             </div>
 
