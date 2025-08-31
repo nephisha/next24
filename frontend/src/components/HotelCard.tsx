@@ -9,10 +9,9 @@ import { Car } from "lucide-react";
 
 interface HotelCardProps {
     hotel: Hotel
-    onSelect?: (hotel: Hotel) => void
 }
 
-export default function HotelCard({ hotel, onSelect }: HotelCardProps) {
+export default function HotelCard({ hotel }: HotelCardProps) {
     const [imageError, setImageError] = useState(false)
 
     const handleBookNow = () => {

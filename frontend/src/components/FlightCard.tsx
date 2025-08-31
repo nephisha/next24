@@ -7,10 +7,9 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
 
 interface FlightCardProps {
     flight: Flight
-    onSelect?: (flight: Flight) => void
 }
 
-export default function FlightCard({ flight, onSelect }: FlightCardProps) {
+export default function FlightCard({ flight }: FlightCardProps) {
     const [showDetails, setShowDetails] = useState(false)
 
     const firstSegment = flight.segments[0]

@@ -22,7 +22,7 @@ const AIRPORTS: Airport[] = [
     // US Major Airports
     { code: 'JFK', name: 'John F. Kennedy International Airport', city: 'New York', country: 'United States' },
     { code: 'LAX', name: 'Los Angeles International Airport', city: 'Los Angeles', country: 'United States' },
-    { code: 'ORD', name: 'O\'Hare International Airport', city: 'Chicago', country: 'United States' },
+    { code: 'ORD', name: 'O&apos;Hare International Airport', city: 'Chicago', country: 'United States' },
     { code: 'MIA', name: 'Miami International Airport', city: 'Miami', country: 'United States' },
     { code: 'SFO', name: 'San Francisco International Airport', city: 'San Francisco', country: 'United States' },
     { code: 'LAS', name: 'McCarran International Airport', city: 'Las Vegas', country: 'United States' },
@@ -229,7 +229,7 @@ export default function AirportAutocomplete({ value, onChange, placeholder, erro
                             ✅ Exact airport code match found! Select it or continue typing.
                         </div>
                     )}
-                    {filteredAirports.map((airport, index) => {
+                    {filteredAirports.map((airport) => {
                         const isExactMatch = airport.code.toLowerCase() === searchTerm.toLowerCase()
                         return (
                             <button
@@ -266,6 +266,7 @@ export default function AirportAutocomplete({ value, onChange, placeholder, erro
             {isOpen && searchTerm && filteredAirports.length === 0 && (
                 <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4 text-center text-gray-500">
                     <div className="text-sm">
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
                         No airports found for "{searchTerm}"
                     </div>
                     <div className="text-xs mt-1">
