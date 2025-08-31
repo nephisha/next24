@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # Application
+      - DEBUG=true
+      - USE_MOCK_DATA=false
+      
+      # SerpAPI (Google Flights)
+      - SERPAPI_KEY=50077c30799321f18150852dfffb59190305d26ec3f081ea7310684e9e27eff9
+      
+      # Optional APIs (leave empty if not using)
+      - SUPABASE_URL=https://placeholder.supabase.co
+      - SUPABASE_ANON_KEY=placeholder_key
+      - REDIS_URL=redis://redis:6379
+      - KIWI_API_KEY=
+      - SKYSCANNER_API_KEY=
+      - AMADEUS_CLIENT_ID=
+      - AMADEUS_CLIENT_SECRET=
+      - TRAVELPAYOUTS_TOKEN=
+      
+      # CORS
+      - ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Next.js App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Redis Cache (optional but recommended)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis_data:

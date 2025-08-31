@@ -88,11 +88,8 @@ export default function FlightCard({ flight, onSelect }: FlightCardProps) {
                     </div>
                 </div>
 
-                {/* Provider and details toggle */}
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                    <div className="text-sm text-gray-600">
-                        via {flight.provider}
-                    </div>
+                {/* Details toggle */}
+                <div className="flex items-center justify-end mt-4 pt-4 border-t border-gray-100">
                     <button
                         onClick={() => setShowDetails(!showDetails)}
                         className="flex items-center text-sm text-primary hover:text-secondary"

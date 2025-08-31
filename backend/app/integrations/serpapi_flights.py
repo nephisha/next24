@@ -36,7 +36,8 @@ class SerpAPIFlights:
             return []
 
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
+            # Use shorter timeout to allow for response processing
+            async with httpx.AsyncClient(timeout=20.0) as client:
                 params = self._build_search_params(search_request)
                 logger.info(f"SerpAPI request params: {params}")
 
@@ -58,6 +59,9 @@ class SerpAPIFlights:
 
                 return self._parse_flights(data, search_request)
 
+        except httpx.TimeoutException as e:
+            logger.warning(f"SerpAPI timeout after 20s: {e}")
+            return []
         except httpx.HTTPStatusError as e:
             logger.error(
                 f"SerpAPI HTTP error {e.response.status_code}: {e.response.text}"
@@ -196,7 +200,7 @@ class SerpAPIFlights:
                 price=float(price),
                 currency=currency,
                 deep_link=flight_data.get("booking_token", ""),
-                provider="Google Flights (SerpAPI)",
+                provider="Google Flights",
             )
 
         except Exception as e:

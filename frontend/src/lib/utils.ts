@@ -46,3 +46,16 @@ export function getTodayAndTomorrow() {
     tomorrow: format(tomorrow, 'yyyy-MM-dd'),
   }
 }
+
+export function getDateLimits() {
+  const today = new Date()
+  const maxDate = new Date(today)
+  maxDate.setDate(maxDate.getDate() + 330) // ~11 months like Google Flights
+  
+  return {
+    minDate: format(today, 'yyyy-MM-dd'),
+    maxDate: format(maxDate, 'yyyy-MM-dd'),
+    defaultDeparture: format(today, 'yyyy-MM-dd'),
+    defaultReturn: format(new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), // 1 week later
+  }
+}

@@ -42,19 +42,21 @@ export default function SearchFilters({ type, onFiltersChange }: SearchFiltersPr
 
             {isOpen && (
                 <div className="border-t border-gray-100 p-4 space-y-4">
-                    {/* Price filter */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Max Price
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="No limit"
-                            value={filters.maxPrice}
-                            onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
-                        />
-                    </div>
+                    {/* Price filter - only show for hotels */}
+                    {type === 'hotels' && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Max Price
+                            </label>
+                            <input
+                                type="number"
+                                placeholder="No limit"
+                                value={filters.maxPrice}
+                                onChange={(e) => updateFilter('maxPrice', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                            />
+                        </div>
+                    )}
 
                     {type === 'flights' && (
                         <>

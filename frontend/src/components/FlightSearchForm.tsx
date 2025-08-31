@@ -4,20 +4,27 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { getTodayAndTomorrow } from '@/lib/utils'
+import { getDateLimits } from '@/lib/utils'
 import type { FlightSearchParams } from '@/types'
 
 const flightSearchSchema = z.object({
     origin: z.string().min(3, 'Please select origin airport').max(3),
     destination: z.string().min(3, 'Please select destination airport').max(3),
-    departure_date: z.string(),
+    departure_date: z.string().min(1, 'Please select departure date'),
     return_date: z.string().optional(),
     adults: z.number().min(1).max(9),
     children: z.number().min(0).max(9),
     infants: z.number().min(0).max(9),
     cabin_class: z.enum(['economy', 'premium_economy', 'business', 'first']),
-    max_price: z.number().optional(),
     direct_flights_only: z.boolean(),
+}).refine((data) => {
+    if (data.return_date && data.departure_date) {
+        return new Date(data.return_date) > new Date(data.departure_date)
+    }
+    return true
+}, {
+    message: "Return date must be after departure date",
+    path: ["return_date"],
 })
 
 interface FlightSearchFormProps {
@@ -27,7 +34,7 @@ interface FlightSearchFormProps {
 
 export default function FlightSearchForm({ onSearch, isLoading = false }: FlightSearchFormProps) {
     const [isRoundTrip, setIsRoundTrip] = useState(false)
-    const { today, tomorrow } = getTodayAndTomorrow()
+    const { minDate, maxDate, defaultDeparture, defaultReturn } = getDateLimits()
 
     const {
         register,
@@ -38,7 +45,8 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
     } = useForm<FlightSearchParams>({
         resolver: zodResolver(flightSearchSchema),
         defaultValues: {
-            departure_date: today,
+            departure_date: defaultDeparture,
+            return_date: '', // Start with empty return date for one-way
             adults: 1,
             children: 0,
             infants: 0,
@@ -48,7 +56,12 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
     })
 
     const onSubmit = (data: FlightSearchParams) => {
-        onSearch(data)
+        // For one-way flights, ensure return_date is not sent
+        const searchData = {
+            ...data,
+            return_date: isRoundTrip ? data.return_date : undefined
+        }
+        onSearch(searchData)
     }
 
     return (
@@ -59,7 +72,11 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     <input
                         type="radio"
                         checked={!isRoundTrip}
-                        onChange={() => setIsRoundTrip(false)}
+                        onChange={() => {
+                            setIsRoundTrip(false)
+                            // Clear return date when switching to one-way
+                            setValue('return_date', '')
+                        }}
                         className="mr-2 text-primary"
                     />
                     <span>One way</span>
@@ -68,7 +85,13 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     <input
                         type="radio"
                         checked={isRoundTrip}
-                        onChange={() => setIsRoundTrip(true)}
+                        onChange={() => {
+                            setIsRoundTrip(true)
+                            // Auto-set return date if not already set
+                            if (!watch('return_date')) {
+                                setValue('return_date', defaultReturn)
+                            }
+                        }}
                         className="mr-2 text-primary"
                     />
                     <span>Round trip</span>
@@ -84,9 +107,10 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     <input
                         {...register('origin')}
                         type="text"
-                        placeholder="Origin (e.g., NYC)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                        placeholder="NYC, LAX, SFO..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary uppercase"
                         maxLength={3}
+                        style={{ textTransform: 'uppercase' }}
                     />
                     {errors.origin && (
                         <p className="mt-1 text-sm text-red-600">{errors.origin.message}</p>
@@ -100,9 +124,10 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     <input
                         {...register('destination')}
                         type="text"
-                        placeholder="Destination (e.g., LON)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                        placeholder="LAX, NYC, MIA..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary uppercase"
                         maxLength={3}
+                        style={{ textTransform: 'uppercase' }}
                     />
                     {errors.destination && (
                         <p className="mt-1 text-sm text-red-600">{errors.destination.message}</p>
@@ -114,31 +139,41 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Departure
+                        Departure Date
                     </label>
-                    <select
+                    <input
                         {...register('departure_date')}
+                        type="date"
+                        min={minDate}
+                        max={maxDate}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
-                    >
-                        <option value={today}>Today</option>
-                        <option value={tomorrow}>Tomorrow</option>
-                    </select>
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                        Select any date up to 11 months in advance
+                    </p>
+                    {errors.departure_date && (
+                        <p className="mt-1 text-sm text-red-600">{errors.departure_date.message}</p>
+                    )}
                 </div>
 
                 {isRoundTrip && (
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Return
+                            Return Date
                         </label>
-                        <select
+                        <input
                             {...register('return_date')}
+                            type="date"
+                            min={watch('departure_date') || minDate}
+                            max={maxDate}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
-                        >
-                            <option value={tomorrow}>Tomorrow</option>
-                            <option value={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>
-                                Day after tomorrow
-                            </option>
-                        </select>
+                        />
+                        <p className="mt-1 text-xs text-gray-500">
+                            Must be after departure date
+                        </p>
+                        {errors.return_date && (
+                            <p className="mt-1 text-sm text-red-600">{errors.return_date.message}</p>
+                        )}
                     </div>
                 )}
             </div>
@@ -205,17 +240,7 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </select>
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Max Price (USD)
-                    </label>
-                    <input
-                        {...register('max_price', { valueAsNumber: true })}
-                        type="number"
-                        placeholder="No limit"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
-                    />
-                </div>
+
             </div>
 
             {/* Direct flights checkbox */}

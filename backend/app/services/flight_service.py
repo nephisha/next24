@@ -52,71 +52,64 @@ class FlightService:
         all_flights = []
 
         try:
-            # Use mock data for development if enabled
-            if settings.use_mock_data:
-                logger.info("Using mock flight data for development")
-                all_flights = await self.mock_api.search_flights(search_request)
-                providers_used = ["MockAPI"]
+            # Only use SerpAPI for clean, real flight data
+            tasks = []
+            providers_used = []
+
+            # SerpAPI Google Flights (primary source)
+            if settings.serpapi_key:
+                tasks.append(self._search_serpapi(search_request))
+                providers_used.append("Google Flights")
             else:
-                # Run API calls concurrently
-                tasks = []
+                logger.warning(
+                    "SerpAPI key not configured, no flight results available"
+                )
+                # Return empty results if no SerpAPI key
+                return FlightSearchResponse(
+                    flights=[],
+                    search_id=search_id,
+                    total_results=0,
+                    search_params=search_request,
+                    providers=["No API configured"],
+                    cache_hit=False,
+                    search_time_ms=int((time.time() - start_time) * 1000),
+                )
 
-                # Priority order: Google Flights > Amadeus > Others
+            # Execute SerpAPI search with timeout
+            if tasks:
+                try:
+                    results = await asyncio.wait_for(
+                        asyncio.gather(*tasks, return_exceptions=True),
+                        timeout=15.0,  # 15 second timeout for SerpAPI
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning("SerpAPI search timed out after 15s")
+                    return FlightSearchResponse(
+                        flights=[],
+                        search_id=search_id,
+                        total_results=0,
+                        search_params=search_request,
+                        providers=["Search timeout"],
+                        cache_hit=False,
+                        search_time_ms=int((time.time() - start_time) * 1000),
+                    )
 
-                # SerpAPI Google Flights (highest priority - real Google Flights data)
-                if settings.serpapi_key:
-                    tasks.append(self._search_serpapi(search_request))
-                    providers_used.append("Google Flights (SerpAPI)")
-
-                # Travelpayouts (official airline partnerships)
-                if settings.travelpayouts_token:
-                    tasks.append(self._search_travelpayouts(search_request))
-                    providers_used.append("Travelpayouts")
-
-                # Amadeus (preferred - most reliable)
-                if settings.amadeus_client_id and settings.amadeus_client_secret:
-                    tasks.append(self._search_amadeus(search_request))
-                    providers_used.append("Amadeus")
-
-                # Kiwi.com (fallback)
-                if settings.kiwi_api_key:
-                    tasks.append(self._search_kiwi(search_request))
-                    providers_used.append("Kiwi")
-
-                # Add other providers
-                if settings.skyscanner_api_key:
-                    tasks.append(self._search_skyscanner(search_request))
-                    providers_used.append("Skyscanner")
-
-                if settings.aviasales_api_token:
-                    tasks.append(self._search_aviasales(search_request))
-                    providers_used.append("Aviasales")
-
-                # Always add mock as fallback to ensure we have results
-                if not tasks or len(tasks) == 0:
-                    tasks.append(self._search_mock(search_request))
-                    providers_used.append("MockAPI (Fallback)")
-
-                # Execute all searches concurrently with timeout
-                if tasks:
-                    results = await asyncio.gather(*tasks, return_exceptions=True)
-
-                    # Collect results from successful searches
-                    for i, result in enumerate(results):
-                        if isinstance(result, list):
-                            all_flights.extend(result)
-                            logger.info(
-                                f"Provider {providers_used[i]} returned {len(result)} flights"
-                            )
-                        else:
-                            logger.error(
-                                f"Provider {providers_used[i]} failed: {result}"
-                            )
-                else:
-                    # No API keys configured, use mock data
-                    logger.warning("No flight API keys configured, using mock data")
-                    all_flights = await self.mock_api.search_flights(search_request)
-                    providers_used = ["MockAPI"]
+                # Collect results from SerpAPI
+                for i, result in enumerate(results):
+                    if isinstance(result, list):
+                        all_flights.extend(result)
+                        logger.info(f"SerpAPI returned {len(result)} flights")
+                    else:
+                        logger.error(f"SerpAPI search failed: {result}")
+                        return FlightSearchResponse(
+                            flights=[],
+                            search_id=search_id,
+                            total_results=0,
+                            search_params=search_request,
+                            providers=["Search failed"],
+                            cache_hit=False,
+                            search_time_ms=int((time.time() - start_time) * 1000),
+                        )
 
             # Remove duplicates and sort by price
             unique_flights = self._deduplicate_flights(all_flights)

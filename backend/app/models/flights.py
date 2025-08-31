@@ -32,18 +32,32 @@ class FlightSearchRequest(BaseModel):
     )
 
     @validator("departure_date")
-    def departure_date_must_be_today_or_tomorrow(cls, v):
+    def departure_date_must_be_valid(cls, v):
+        from datetime import timedelta
+
         today = date.today()
-        if v < today or v > today.replace(day=today.day + 1):
-            raise ValueError(
-                "Departure date must be today or tomorrow for last-minute deals"
-            )
+        # Allow booking up to 11 months in advance (same as Google Flights)
+        max_date = today + timedelta(days=330)  # ~11 months
+
+        if v < today:
+            raise ValueError("Departure date cannot be in the past")
+        if v > max_date:
+            raise ValueError("Departure date cannot be more than 11 months in advance")
         return v
 
     @validator("return_date")
     def return_date_must_be_after_departure(cls, v, values):
-        if v and "departure_date" in values and v <= values["departure_date"]:
-            raise ValueError("Return date must be after departure date")
+        if v and "departure_date" in values:
+            if v <= values["departure_date"]:
+                raise ValueError("Return date must be after departure date")
+
+            # Also validate return date is not too far in future
+            from datetime import timedelta
+
+            today = date.today()
+            max_date = today + timedelta(days=330)  # ~11 months
+            if v > max_date:
+                raise ValueError("Return date cannot be more than 11 months in advance")
         return v
 
 
