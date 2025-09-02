@@ -35,7 +35,7 @@ export default function CollaborationPanel({ itinerary, onUpdate, onClose }: Col
             name: 'You',
             role: 'owner',
             status: 'accepted',
-            joinedAt: '2024-01-01'
+            joinedAt: '2025-08-01'
         },
         {
             id: 'collab1',
@@ -43,7 +43,7 @@ export default function CollaborationPanel({ itinerary, onUpdate, onClose }: Col
             name: 'Sarah Johnson',
             role: 'editor',
             status: 'accepted',
-            joinedAt: '2024-01-15'
+            joinedAt: '2025-08-15'
         },
         {
             id: 'collab2',
@@ -51,7 +51,7 @@ export default function CollaborationPanel({ itinerary, onUpdate, onClose }: Col
             name: 'Mike Chen',
             role: 'viewer',
             status: 'pending',
-            joinedAt: '2024-01-20'
+            joinedAt: '2025-08-20'
         }
     ]);
 

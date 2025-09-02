@@ -8,6 +8,8 @@ import logging
 from app.config import settings
 from app.cache import cache
 from app.api.v1 import flights, hotels
+from app.database import create_tables, check_database_connection
+from app.routers import destinations
 
 # ─────────────────────────────
 # Logging Configuration
@@ -22,8 +24,20 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting up application...")
+
+    # Initialize database
+    logger.info("Checking database connection...")
+    if check_database_connection():
+        logger.info("Creating database tables...")
+        create_tables()
+    else:
+        logger.error("Database connection failed!")
+
+    # Initialize cache
     await cache.connect()
+
     yield
+
     logger.info("Shutting down application...")
     await cache.close()
 
@@ -76,6 +90,17 @@ app.include_router(
     hotels.router, prefix=f"{settings.api_v1_prefix}/hotels", tags=["hotels"]
 )
 
+# Add destinations router
+app.include_router(destinations.router, tags=["destinations"])
+
+# Add guides router
+app.include_router(destinations.guides_router, tags=["guides"])
+
+# Add social media router
+from app.routers import social
+
+app.include_router(social.router, tags=["social"])
+
 
 # ─────────────────────────────
 # Base Routes
@@ -87,4 +112,14 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": "2025-07-16T00:00:00Z"}
+    from datetime import datetime
+
+    # Check database connection
+    db_status = check_database_connection()
+
+    return {
+        "status": "healthy" if db_status else "degraded",
+        "database": "connected" if db_status else "disconnected",
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": "1.0.0",
+    }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Plane, MapPin, BookOpen, Calendar, Menu, X } from 'lucide-react';
+import { Plane, MapPin, BookOpen, Calendar, Users, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 const navigation = [
@@ -10,6 +10,7 @@ const navigation = [
     { name: 'Destinations', href: '/destinations', icon: MapPin },
     { name: 'Guides', href: '/guides', icon: BookOpen },
     { name: 'Planner', href: '/planner', icon: Calendar },
+    { name: 'Community', href: '/community', icon: Users },
 ];
 
 export default function Header() {
@@ -37,7 +38,8 @@ export default function Header() {
                             const isActive = pathname === item.href ||
                                 (item.href === '/destinations' && pathname.startsWith('/destinations')) ||
                                 (item.href === '/guides' && pathname.startsWith('/guides')) ||
-                                (item.href === '/planner' && pathname.startsWith('/planner'));
+                                (item.href === '/planner' && pathname.startsWith('/planner')) ||
+                                (item.href === '/community' && pathname.startsWith('/community'));
 
                             return (
                                 <Link

@@ -56,11 +56,11 @@ const featuredGuides = [
         href: '/guides/airports/layover-survival'
     },
     {
-        title: 'Best Beach Destinations for 2024',
+        title: 'Best Beach Destinations for 2025',
         category: 'Best Of Lists',
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop',
         readTime: '15 min read',
-        href: '/guides/best-of/beaches-2024'
+        href: '/guides/best-of/beaches-2025'
     },
     {
         title: 'Budget Travel: Southeast Asia Under $50/Day',

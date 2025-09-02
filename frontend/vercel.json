@@ -1,44 +1,27 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "package.json",
-            "use": "@vercel/next"
-        }
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "framework": "nextjs",
+    "regions": [
+        "iad1",
+        "fra1",
+        "hnd1"
     ],
-    "rewrites": [
-        {
-            "source": "/api/:match*",
-            "destination": "https://next24-production.up.railway.app/api/:match*"
-        },
-        {
-            "source": "/sitemap.xml",
-            "destination": "/api/sitemap"
-        },
-        {
-            "source": "/robots.txt",
-            "destination": "/api/robots"
+    "functions": {
+        "app/**/*.tsx": {
+            "maxDuration": 30
         }
-    ],
-    "redirects": [
-        {
-            "source": "/:path*",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "next24.xyz"
-                }
-            ],
-            "destination": "https://www.next24.xyz/:path*",
-            "permanent": true
-        },
-        {
-            "source": "/search",
-            "destination": "/",
-            "permanent": false
-        }
-    ],
+    },
     "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "s-maxage=300, stale-while-revalidate=600"
+                }
+            ]
+        },
         {
             "source": "/(.*)",
             "headers": [
@@ -53,33 +36,17 @@
                 {
                     "key": "X-XSS-Protection",
                     "value": "1; mode=block"
-                },
-                {
-                    "key": "Referrer-Policy",
-                    "value": "origin-when-cross-origin"
-                }
-            ]
-        },
-        {
-            "source": "/api/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "*"
-                },
-                {
-                    "key": "Access-Control-Allow-Methods",
-                    "value": "GET, POST, PUT, DELETE, OPTIONS"
-                },
-                {
-                    "key": "Access-Control-Allow-Headers",
-                    "value": "Content-Type, Authorization"
                 }
             ]
         }
     ],
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://your-railway-app.railway.app/api/:path*"
+        }
+    ],
     "env": {
-        "NEXT_PUBLIC_API_URL": "https://next24-production.up.railway.app",
-        "NEXT_PUBLIC_SITE_URL": "https://www.next24.xyz"
+        "NEXT_PUBLIC_API_URL": "https://your-railway-app.railway.app"
     }
 }

@@ -60,12 +60,12 @@ const bestOfCategories = [
 
 const featuredLists = [
     {
-        title: 'Top 10 Beaches for 2024',
+        title: 'Top 10 Beaches for 2025',
         category: 'Beaches',
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop',
         description: 'From Maldives to Maui, discover the world\'s most beautiful beaches',
         readTime: '8 min read',
-        href: '/guides/best-of/beaches-2024',
+        href: '/guides/best-of/beaches-2025',
         highlights: ['Maldives', 'Bora Bora', 'Santorini', 'Maui']
     },
     {
@@ -90,7 +90,7 @@ const featuredLists = [
 
 const quickLists = [
     {
-        title: 'Best Budget Destinations 2024',
+        title: 'Best Budget Destinations 2025',
         items: ['Vietnam', 'Guatemala', 'Nepal', 'Bulgaria', 'Indonesia'],
         icon: '💰'
     },
