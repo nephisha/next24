@@ -65,9 +65,9 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Trip Type */}
-            <div className="flex space-x-1 p-0.5 bg-gray-100 rounded-md w-fit">
+            <div className="flex space-x-1 p-1 bg-white/20 backdrop-blur-sm rounded-xl w-fit border border-white/30">
                 <label className="flex items-center">
                     <input
                         type="radio"
@@ -79,9 +79,9 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         }}
                         className="sr-only"
                     />
-                    <span className={`px-2 py-1 rounded text-xs font-medium transition-all duration-300 cursor-pointer ${!isRoundTrip
-                        ? 'bg-white text-primary shadow-sm'
-                        : 'text-gray-600 hover:text-primary'
+                    <span className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${!isRoundTrip
+                        ? 'bg-white text-blue-600 shadow-lg'
+                        : 'text-white hover:text-blue-200'
                         }`}>
                         One way
                     </span>
@@ -99,9 +99,9 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                         }}
                         className="sr-only"
                     />
-                    <span className={`px-2 py-1 rounded text-xs font-medium transition-all duration-300 cursor-pointer ${isRoundTrip
-                        ? 'bg-white text-primary shadow-sm'
-                        : 'text-gray-600 hover:text-primary'
+                    <span className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${isRoundTrip
+                        ? 'bg-white text-blue-600 shadow-lg'
+                        : 'text-white hover:text-blue-200'
                         }`}>
                         Round trip
                     </span>
@@ -109,11 +109,11 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
             </div>
 
             {/* Route */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="group">
-                    <label className="block text-xs font-medium text-gray-700 mb-1 group-focus-within:text-cyan-600 transition-colors">
-                        <span className="text-sm mr-1">🛫</span>
-                        Origin
+                    <label className="block text-sm font-medium text-white mb-2 group-focus-within:text-cyan-300 transition-colors">
+                        <span className="text-lg mr-2">🛫</span>
+                        From
                     </label>
                     <div className="relative">
                         <AirportAutocomplete
@@ -126,9 +126,9 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                 </div>
 
                 <div className="group">
-                    <label className="block text-xs font-medium text-gray-700 mb-1 group-focus-within:text-cyan-600 transition-colors">
-                        <span className="text-sm mr-1">🛬</span>
-                        Destination
+                    <label className="block text-sm font-medium text-white mb-2 group-focus-within:text-cyan-300 transition-colors">
+                        <span className="text-lg mr-2">🛬</span>
+                        To
                     </label>
                     <div className="relative">
                         <AirportAutocomplete
@@ -142,58 +142,58 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
             </div>
 
             {/* Dates */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="group">
-                    <label className="block text-xs font-medium text-gray-700 mb-1 group-focus-within:text-cyan-600 transition-colors">
-                        <span className="text-sm mr-1">📅</span>
-                        Departure Date
+                    <label className="block text-sm font-medium text-white mb-2 group-focus-within:text-cyan-300 transition-colors">
+                        <span className="text-lg mr-2">📅</span>
+                        Departure
                     </label>
                     <input
                         {...register('departure_date')}
                         type="date"
                         min={minDate}
                         max={maxDate}
-                        className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                        className="w-full px-4 py-3 text-sm border border-white/30 rounded-xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium"
                     />
                     {errors.departure_date && (
-                        <p className="mt-0.5 text-xs text-red-600 font-medium">{errors.departure_date.message}</p>
+                        <p className="mt-1 text-sm text-red-300 font-medium">{errors.departure_date.message}</p>
                     )}
                 </div>
 
                 {isRoundTrip && (
                     <div className="group">
-                        <label className="block text-xs font-medium text-gray-700 mb-1 group-focus-within:text-cyan-600 transition-colors">
-                            <span className="text-sm mr-1">🔄</span>
-                            Return Date
+                        <label className="block text-sm font-medium text-white mb-2 group-focus-within:text-cyan-300 transition-colors">
+                            <span className="text-lg mr-2">🔄</span>
+                            Return
                         </label>
                         <input
                             {...register('return_date')}
                             type="date"
                             min={watch('departure_date') || minDate}
                             max={maxDate}
-                            className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                            className="w-full px-4 py-3 text-sm border border-white/30 rounded-xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium"
                         />
                         {errors.return_date && (
-                            <p className="mt-0.5 text-xs text-red-600 font-medium">{errors.return_date.message}</p>
+                            <p className="mt-1 text-sm text-red-300 font-medium">{errors.return_date.message}</p>
                         )}
                     </div>
                 )}
             </div>
 
             {/* Passengers */}
-            <div className="bg-gradient-to-r from-cyan-50 to-teal-50 rounded-md p-2">
-                <h3 className="text-xs font-medium text-gray-700 mb-1.5">
-                    <span className="text-sm mr-1">👥</span>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <h3 className="text-sm font-medium text-white mb-3">
+                    <span className="text-lg mr-2">👥</span>
                     Passengers
                 </h3>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-3 gap-3">
                     <div className="group">
-                        <label className="block text-xs font-medium text-gray-600 mb-0.5 group-focus-within:text-cyan-600 transition-colors">
+                        <label className="block text-sm font-medium text-white mb-1 group-focus-within:text-cyan-300 transition-colors">
                             Adults
                         </label>
                         <select
                             {...register('adults', { valueAsNumber: true })}
-                            className="w-full px-1.5 py-1 text-xs border border-gray-200 rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-white"
+                            className="w-full px-3 py-2 text-sm border border-white/30 rounded-lg focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium"
                         >
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                                 <option key={num} value={num}>{num}</option>
@@ -202,12 +202,12 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </div>
 
                     <div className="group">
-                        <label className="block text-xs font-medium text-gray-600 mb-0.5 group-focus-within:text-cyan-600 transition-colors">
+                        <label className="block text-sm font-medium text-white mb-1 group-focus-within:text-cyan-300 transition-colors">
                             Children
                         </label>
                         <select
                             {...register('children', { valueAsNumber: true })}
-                            className="w-full px-1.5 py-1 text-xs border border-gray-200 rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-white"
+                            className="w-full px-3 py-2 text-sm border border-white/30 rounded-lg focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium"
                         >
                             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                                 <option key={num} value={num}>{num}</option>
@@ -216,12 +216,12 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                     </div>
 
                     <div className="group">
-                        <label className="block text-xs font-medium text-gray-600 mb-0.5 group-focus-within:text-cyan-600 transition-colors">
+                        <label className="block text-sm font-medium text-white mb-1 group-focus-within:text-cyan-300 transition-colors">
                             Infants
                         </label>
                         <select
                             {...register('infants', { valueAsNumber: true })}
-                            className="w-full px-1.5 py-1 text-xs border border-gray-200 rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-white"
+                            className="w-full px-3 py-2 text-sm border border-white/30 rounded-lg focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium"
                         >
                             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                                 <option key={num} value={num}>{num}</option>
@@ -233,13 +233,13 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
 
             {/* Class */}
             <div className="group">
-                <label className="block text-xs font-medium text-gray-700 mb-1 group-focus-within:text-cyan-600 transition-colors">
-                    <span className="text-sm mr-1">💺</span>
+                <label className="block text-sm font-medium text-white mb-2 group-focus-within:text-cyan-300 transition-colors">
+                    <span className="text-lg mr-2">💺</span>
                     Class
                 </label>
                 <select
                     {...register('cabin_class')}
-                    className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 text-sm border border-white/30 rounded-xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium"
                 >
                     <option value="economy">Economy</option>
                     <option value="premium_economy">Premium Economy</option>
@@ -252,17 +252,17 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:from-teal-600 hover:via-cyan-600 hover:to-blue-600 focus:ring-2 focus:ring-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-sm"
+                className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white py-4 px-6 rounded-xl text-lg font-bold hover:from-cyan-600 hover:via-blue-600 hover:to-purple-600 focus:ring-4 focus:ring-cyan-400/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl"
             >
                 {isLoading ? (
                     <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1.5" />
-                        <span className="text-sm">Searching deals...</span>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
+                        <span className="text-lg">Searching amazing deals...</span>
                     </div>
                 ) : (
                     <div className="flex items-center justify-center">
-                        <span className="text-base mr-1.5">🚀</span>
-                        <span className="text-sm">Search Flights</span>
+                        <span className="text-xl mr-3">✈️</span>
+                        <span className="text-lg">Search Flights</span>
                     </div>
                 )}
             </button>

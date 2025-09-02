@@ -1,108 +1,104 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useState } from 'react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Plane, MapPin, BookOpen, Calendar, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+
+const navigation = [
+    { name: 'Flights', href: '/', icon: Plane },
+    { name: 'Destinations', href: '/destinations', icon: MapPin },
+    { name: 'Guides', href: '/guides', icon: BookOpen },
+    { name: 'Planner', href: '/planner', icon: Calendar },
+];
 
 export default function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const pathname = usePathname();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
         <header className="bg-white shadow-sm border-b border-gray-200">
-            <div className="max-w-7xl mx-auto pl-0 pr-4 sm:pl-0 sm:pr-6 lg:pl-0 lg:pr-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <Image
-                            src="/next24_logo.png"
-                            alt="Next 24 Logo"
-                            width={200}
-                            height={60}
-                            className="h-12 w-auto"
-                            priority
-                        />
+                    <Link href="/" className="flex items-center gap-2">
+                        <div className="bg-gradient-to-r from-blue-600 to-purple-700 p-2 rounded-lg">
+                            <Plane className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-transparent">
+                            Next24
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-8">
-                        <Link
-                            href="/flights"
-                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
-                        >
-                            Flights
-                        </Link>
-                        <Link
-                            href="/hotels"
-                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
-                        >
-                            Hotels
-                        </Link>
-                        <Link
-                            href="/about"
-                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
-                        >
-                            About
-                        </Link>
-                        <Link
-                            href="/contact"
-                            className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
-                        >
-                            Contact
-                        </Link>
+                        {navigation.map((item) => {
+                            const Icon = item.icon;
+                            const isActive = pathname === item.href ||
+                                (item.href === '/destinations' && pathname.startsWith('/destinations')) ||
+                                (item.href === '/guides' && pathname.startsWith('/guides')) ||
+                                (item.href === '/planner' && pathname.startsWith('/planner'));
+
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                                        ? 'bg-blue-50 text-blue-700'
+                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                        }`}
+                                >
+                                    <Icon className="w-4 h-4" />
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
                     </nav>
 
                     {/* Mobile menu button */}
-                    <div className="md:hidden">
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="text-gray-700 hover:text-primary-600"
-                        >
-                            {isMenuOpen ? (
-                                <XMarkIcon className="h-6 w-6" />
-                            ) : (
-                                <Bars3Icon className="h-6 w-6" />
-                            )}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? (
+                            <X className="w-6 h-6" />
+                        ) : (
+                            <Menu className="w-6 h-6" />
+                        )}
+                    </button>
                 </div>
 
                 {/* Mobile Navigation */}
-                {isMenuOpen && (
+                {mobileMenuOpen && (
                     <div className="md:hidden py-4 border-t border-gray-200">
-                        <div className="flex flex-col space-y-3">
-                            <Link
-                                href="/flights"
-                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Flights
-                            </Link>
-                            <Link
-                                href="/hotels"
-                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Hotels
-                            </Link>
-                            <Link
-                                href="/about"
-                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                About
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className="text-gray-700 hover:text-primary px-3 py-2 text-base font-medium"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Contact
-                            </Link>
-                        </div>
+                        <nav className="space-y-2">
+                            {navigation.map((item) => {
+                                const Icon = item.icon;
+                                const isActive = pathname === item.href ||
+                                    (item.href === '/destinations' && pathname.startsWith('/destinations')) ||
+                                    (item.href === '/guides' && pathname.startsWith('/guides')) ||
+                                    (item.href === '/planner' && pathname.startsWith('/planner'));
+
+                                return (
+                                    <Link
+                                        key={item.name}
+                                        href={item.href}
+                                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                                            ? 'bg-blue-50 text-blue-700'
+                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                            }`}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <Icon className="w-5 h-5" />
+                                        {item.name}
+                                    </Link>
+                                );
+                            })}
+                        </nav>
                     </div>
                 )}
             </div>
         </header>
-    )
+    );
 }

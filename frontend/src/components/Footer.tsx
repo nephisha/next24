@@ -10,11 +10,11 @@ export default function Footer() {
                     {/* Company Info */}
                     <div className="col-span-1 md:col-span-2">
                         <div className="text-2xl font-bold text-primary-400 mb-4">
-                            ⚡ LastMinute Travel
+                            ✈️ Next24
                         </div>
                         <p className="text-gray-300 mb-4 max-w-md">
-                            Your go-to metasearch engine for finding unbeatable last-minute travel deals.
-                            Compare flights and hotels across multiple providers to get the best prices for same-day and next-day trips.
+                            Your complete AI-powered travel platform. Discover amazing destinations, find the best flight deals,
+                            and plan unforgettable journeys with expert guides and local insights.
                         </p>
                         <div className="flex space-x-4">
                             <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -90,7 +90,7 @@ export default function Footer() {
                 <div className="border-t border-gray-800 mt-8 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center">
                         <p className="text-gray-400 text-sm">
-                            © {currentYear} LastMinute Travel. All rights reserved.
+                            © {currentYear} Next24. All rights reserved.
                         </p>
                         <p className="text-gray-400 text-sm mt-2 md:mt-0">
                             Powered by Kiwi.com, Skyscanner & Booking.com APIs

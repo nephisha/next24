@@ -208,24 +208,24 @@ export default function AirportAutocomplete({ value, onChange, placeholder, erro
                     onChange={handleInputChange}
                     onFocus={handleFocus}
                     placeholder={placeholder}
-                    className={`w-full px-2 py-1.5 text-xs border rounded-md focus:ring-1 focus:ring-cyan-500/20 focus:border-cyan-500 uppercase transition-all duration-300 bg-gray-50 focus:bg-white placeholder:text-xs placeholder:text-gray-400 ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200'
+                    className={`w-full px-4 py-3 text-sm border border-white/30 rounded-xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 uppercase transition-all duration-300 bg-white/90 backdrop-blur-sm text-gray-800 font-medium placeholder:text-sm placeholder:text-gray-500 ${error ? 'border-red-300 focus:border-red-400 focus:ring-red-400/50' : ''
                         }`}
                     maxLength={50}
                     style={{ textTransform: 'uppercase' }}
                 />
-                <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400 pointer-events-none" />
+                <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
             </div>
 
             {error && (
-                <p className="mt-0.5 text-xs text-red-600 font-medium">{error}</p>
+                <p className="mt-1 text-sm text-red-300 font-medium">{error}</p>
             )}
 
             {/* Dropdown */}
             {isOpen && filteredAirports.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-sm border border-white/30 rounded-xl shadow-2xl max-h-64 overflow-y-auto">
                     {/* Exact match indicator */}
                     {searchTerm.length === 3 && filteredAirports.some(airport => airport.code.toLowerCase() === searchTerm.toLowerCase()) && (
-                        <div className="px-4 py-2 bg-green-50 border-b border-green-200 text-sm text-green-700">
+                        <div className="px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 text-sm text-green-700 font-medium">
                             ✅ Exact airport code match found! Select it or continue typing.
                         </div>
                     )}
@@ -236,7 +236,7 @@ export default function AirportAutocomplete({ value, onChange, placeholder, erro
                                 key={airport.code}
                                 type="button"
                                 onClick={() => handleAirportSelect(airport)}
-                                className={`w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none border-b border-gray-100 last:border-b-0 ${isExactMatch ? 'bg-green-50 border-l-4 border-l-green-500' : ''
+                                className={`w-full px-4 py-3 text-left hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 focus:bg-gradient-to-r focus:from-blue-50 focus:to-cyan-50 focus:outline-none border-b border-gray-100 last:border-b-0 transition-all duration-200 ${isExactMatch ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-l-green-500' : ''
                                     }`}
                             >
                                 <div className="flex items-center justify-between">
@@ -264,7 +264,7 @@ export default function AirportAutocomplete({ value, onChange, placeholder, erro
 
             {/* No results */}
             {isOpen && searchTerm && filteredAirports.length === 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4 text-center text-gray-500">
+                <div className="absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-sm border border-white/30 rounded-xl shadow-2xl p-4 text-center text-gray-500">
                     <div className="text-sm">
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         No airports found for "{searchTerm}"

@@ -207,10 +207,10 @@ export function getAirportCurrency(airportCode: string): string {
  */
 export function convertCurrency(amount: number, fromCurrency: string, toCurrency: string): number {
   if (fromCurrency === toCurrency) return amount
-  
+
   const fromRate = EXCHANGE_RATES[fromCurrency] || 1
   const toRate = EXCHANGE_RATES[toCurrency] || 1
-  
+
   // Convert to USD first, then to target currency
   const usdAmount = amount / fromRate
   return usdAmount * toRate
@@ -239,16 +239,16 @@ export function formatPriceInCurrency(amount: number, currency: string): string 
  * Convert and format price for display based on origin airport
  */
 export function formatFlightPrice(
-  price: number, 
-  originalCurrency: string, 
+  price: number,
+  originalCurrency: string,
   originAirport: string
-): { 
+): {
   formattedPrice: string
   currency: string
   originalPrice?: string
 } {
   const targetCurrency = getAirportCurrency(originAirport)
-  
+
   if (originalCurrency === targetCurrency) {
     return {
       formattedPrice: formatPriceInCurrency(price, originalCurrency),
@@ -257,7 +257,7 @@ export function formatFlightPrice(
   }
 
   const convertedAmount = convertCurrency(price, originalCurrency, targetCurrency)
-  
+
   return {
     formattedPrice: formatPriceInCurrency(convertedAmount, targetCurrency),
     currency: targetCurrency,
