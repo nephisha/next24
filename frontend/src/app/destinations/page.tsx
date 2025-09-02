@@ -1,6 +1,8 @@
+'use client';
+
 import Link from 'next/link';
-import { Plane, MapPin, Clock, Users, Star, Globe, Compass, Camera } from 'lucide-react';
-import OptimizedImage from '@/components/OptimizedImage';
+import Image from 'next/image';
+import { Plane, MapPin, Clock, Star, Globe, Compass, Camera } from 'lucide-react';
 
 // Comprehensive destinations organized by continent
 const destinationsByContinent = {
@@ -486,12 +488,14 @@ export default function DestinationsPage() {
                                 >
                                     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                                         <div className="relative h-56 overflow-hidden bg-gray-200">
-                                            <OptimizedImage
+                                            <Image
                                                 src={destination.image}
                                                 alt={`${destination.name}, ${destination.country}`}
                                                 fill
-                                                className="group-hover:scale-110 transition-transform duration-500"
-                                                loading="lazy"
+                                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                                onLoad={() => console.log(`✅ Destination image loaded: ${destination.name}`)}
+                                                onError={() => console.error(`❌ Destination image failed: ${destination.name}`)}
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                                             <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-gray-800">

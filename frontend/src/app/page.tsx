@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin, ArrowRight, Plane, Globe, Star, Calendar, Camera, Compass, Heart, Sparkles } from 'lucide-react'
 import SearchTabs from '@/components/SearchTabs'
 import FlightSearchForm from '@/components/FlightSearchForm'
 import HotelSearchForm from '@/components/HotelSearchForm'
 import SearchResults from '@/components/SearchResults'
-import OptimizedImage from '@/components/OptimizedImage'
 import { searchFlights, searchHotels } from '@/lib/api'
 import type { FlightSearchParams, HotelSearchParams, FlightSearchResponse, HotelSearchResponse } from '@/types'
 
@@ -240,7 +240,7 @@ export default function HomePage() {
                                 {
                                     name: 'Paris',
                                     country: 'France',
-                                    image: 'https://images.unsplash.com/photo-1431274172761-fca41d930114?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+                                    image: 'https://images.unsplash.com/photo-1431274172761-fca41d930114',
                                     price: 'From $650',
                                     href: '/destinations/france/paris',
                                     rating: 4.8,
@@ -249,7 +249,7 @@ export default function HomePage() {
                                 {
                                     name: 'Tokyo',
                                     country: 'Japan',
-                                    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+                                    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf',
                                     price: 'From $850',
                                     href: '/destinations/japan/tokyo',
                                     rating: 4.9,
@@ -258,7 +258,7 @@ export default function HomePage() {
                                 {
                                     name: 'New York',
                                     country: 'USA',
-                                    image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+                                    image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9',
                                     price: 'From $450',
                                     href: '/destinations/usa/new-york',
                                     rating: 4.7,
@@ -267,7 +267,7 @@ export default function HomePage() {
                                 {
                                     name: 'London',
                                     country: 'UK',
-                                    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+                                    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad',
                                     price: 'From $550',
                                     href: '/destinations/uk/london',
                                     rating: 4.6,
@@ -280,13 +280,17 @@ export default function HomePage() {
                                     className="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 bg-white"
                                 >
                                     <div className="aspect-[4/3] relative overflow-hidden">
-                                        <OptimizedImage
-                                            src={destination.image}
+                                        <Image
+                                            src={`${destination.image}?w=600&h=400&fit=crop&auto=format&q=80`}
                                             alt={`${destination.name}, ${destination.country}`}
                                             fill
-                                            className="group-hover:scale-110 transition-transform duration-700"
+                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                            onLoad={() => console.log(`✅ Image loaded: ${destination.name}`)}
+                                            onError={() => console.error(`❌ Image failed: ${destination.name}`)}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-20" />
 
                                         {/* Rating Badge */}
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">

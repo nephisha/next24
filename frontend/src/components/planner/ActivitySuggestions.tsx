@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Star, Clock, MapPin, Plus, Search, Filter, Sparkles } from 'lucide-react';
 import type { Activity, ItineraryDay } from '@/app/planner/page';
 
@@ -34,7 +35,7 @@ const sampleActivities: Record<string, Activity[]> = {
             category: 'attraction',
             rating: 4.7,
             price: '€17',
-            image: 'https://images.unsplash.com/photo-1566139884669-4b9356b4c040?w=300&h=200&fit=crop',
+            image: 'https://images.unsplash.com/photo-1566139884669-4b9356b4c040?w=300&h=200&fit=crop&auto=format&q=80',
             openingHours: '9:00 AM - 6:00 PM'
         },
         {
@@ -46,7 +47,7 @@ const sampleActivities: Record<string, Activity[]> = {
             category: 'activity',
             rating: 4.4,
             price: '€15',
-            image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=300&h=200&fit=crop',
+            image: 'https://images.unsplash.com/photo-1549144511-f099e773c147?w=300&h=200&fit=crop&auto=format&q=80',
             openingHours: '10:00 AM - 10:00 PM'
         },
         {
@@ -70,7 +71,7 @@ const sampleActivities: Record<string, Activity[]> = {
             category: 'activity',
             rating: 4.5,
             price: 'Free',
-            image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=300&h=200&fit=crop',
+            image: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=300&h=200&fit=crop&auto=format&q=80',
             openingHours: 'All day'
         },
         {
@@ -204,8 +205,8 @@ export default function ActivitySuggestions({
                             key={category.id}
                             onClick={() => setSelectedCategory(category.id)}
                             className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${selectedCategory === category.id
-                                    ? 'bg-blue-100 text-blue-700'
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                 }`}
                         >
                             <span>{category.icon}</span>
@@ -260,11 +261,17 @@ export default function ActivitySuggestions({
                             <div key={activity.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                                 <div className="flex gap-3">
                                     {activity.image && (
-                                        <img
-                                            src={activity.image}
-                                            alt={activity.name}
-                                            className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                                        />
+                                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                                            <Image
+                                                src={activity.image}
+                                                alt={activity.name}
+                                                width={64}
+                                                height={64}
+                                                className="object-cover w-full h-full"
+                                                onLoad={() => console.log(`✅ Activity image loaded: ${activity.name}`)}
+                                                onError={() => console.error(`❌ Activity image failed: ${activity.name}`)}
+                                            />
+                                        </div>
                                     )}
 
                                     <div className="flex-1 min-w-0">
@@ -299,10 +306,10 @@ export default function ActivitySuggestions({
 
                                         <div className="flex items-center gap-2">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${activity.category === 'attraction' ? 'bg-blue-100 text-blue-800' :
-                                                    activity.category === 'restaurant' ? 'bg-orange-100 text-orange-800' :
-                                                        activity.category === 'activity' ? 'bg-green-100 text-green-800' :
-                                                            activity.category === 'hotel' ? 'bg-purple-100 text-purple-800' :
-                                                                'bg-gray-100 text-gray-800'
+                                                activity.category === 'restaurant' ? 'bg-orange-100 text-orange-800' :
+                                                    activity.category === 'activity' ? 'bg-green-100 text-green-800' :
+                                                        activity.category === 'hotel' ? 'bg-purple-100 text-purple-800' :
+                                                            'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 {activity.category}
                                             </span>
