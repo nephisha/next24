@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Slider } from '@headlessui/react'
 import type { Flight } from '@/types'
 
 interface SearchFiltersProps {
@@ -16,8 +15,8 @@ export default function SearchFilters({ flights, onFilterChange }: SearchFilters
 
     // Calculate filter options from flights
     const maxFlightPrice = Math.max(...flights.map(f => f.price))
-    const uniqueStops = [...new Set(flights.map(f => f.stops))].sort()
-    const uniqueAirlines = [...new Set(flights.map(f => f.segments[0].airline.code))]
+    const uniqueStops = Array.from(new Set(flights.map(f => f.stops))).sort()
+    const uniqueAirlines = Array.from(new Set(flights.map(f => f.segments[0].airline.code)))
         .map(code => {
             const flight = flights.find(f => f.segments[0].airline.code === code)
             return {
