@@ -3,7 +3,10 @@ import time
 import uuid
 from typing import List
 from app.models.hotels import HotelSearchRequest, HotelSearchResponse, Hotel
-from app.integrations import BookingAPI
+from app.integrations.serpapi_hotels import (
+    search_hotels_serpapi,
+    HotelSearchParams as SerpHotelSearchParams,
+)
 from app.services.cache_service import CacheService
 from app.database import supabase
 import logging
@@ -13,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 class HotelService:
     def __init__(self):
-        self.booking_api = BookingAPI()
         self.cache_service = CacheService()
 
     async def search_hotels(
@@ -35,13 +37,13 @@ class HotelService:
             return cached_response
 
         # Search hotels
-        providers_used = ["Booking.com"]
+        providers_used = ["Google Hotels"]
         all_hotels = []
 
         try:
-            # Search using Booking.com API
-            booking_hotels = await self._search_booking(search_request)
-            all_hotels.extend(booking_hotels)
+            # Search using SerpAPI Google Hotels
+            serpapi_hotels = await self._search_serpapi(search_request)
+            all_hotels.extend(serpapi_hotels)
 
             # Apply filters and sort
             filtered_hotels = self._apply_filters(all_hotels, search_request)
@@ -84,12 +86,55 @@ class HotelService:
                 search_time_ms=int((time.time() - start_time) * 1000),
             )
 
-    async def _search_booking(self, search_request: HotelSearchRequest) -> List[Hotel]:
-        """Search hotels using Booking.com API"""
+    async def _search_serpapi(self, search_request: HotelSearchRequest) -> List[Hotel]:
+        """Search hotels using SerpAPI Google Hotels"""
         try:
-            return await self.booking_api.search_hotels(search_request)
+            # Convert to SerpAPI format
+            serpapi_params = SerpHotelSearchParams(
+                destination=search_request.destination,
+                latitude=search_request.latitude,
+                longitude=search_request.longitude,
+                check_in=search_request.check_in.isoformat(),
+                check_out=search_request.check_out.isoformat(),
+                adults=search_request.adults,
+                children=search_request.children,
+                rooms=search_request.rooms,
+            )
+
+            # Search using SerpAPI (run in thread pool since it's synchronous)
+            loop = asyncio.get_event_loop()
+            serpapi_response = await loop.run_in_executor(
+                None, search_hotels_serpapi, serpapi_params
+            )
+
+            # Convert SerpAPI hotels to our Hotel model
+            hotels = []
+            for serpapi_hotel in serpapi_response.hotels:
+                hotel = Hotel(
+                    id=serpapi_hotel.id,
+                    name=serpapi_hotel.name,
+                    location=serpapi_hotel.location,
+                    rating=serpapi_hotel.rating,
+                    review_score=serpapi_hotel.review_score,
+                    review_count=serpapi_hotel.review_count,
+                    price_per_night=serpapi_hotel.price_per_night,
+                    total_price=serpapi_hotel.total_price,
+                    currency=serpapi_hotel.currency,
+                    room_type=serpapi_hotel.room_type,
+                    amenities=serpapi_hotel.amenities,
+                    images=serpapi_hotel.images,
+                    deep_link=serpapi_hotel.deep_link,
+                    provider=serpapi_hotel.provider,
+                    cancellation_policy=serpapi_hotel.cancellation_policy,
+                    breakfast_included=serpapi_hotel.breakfast_included,
+                    last_updated=serpapi_hotel.last_updated,
+                )
+                hotels.append(hotel)
+
+            return hotels
+
         except Exception as e:
-            logger.error(f"Booking API search failed: {e}")
+            logger.error(f"SerpAPI search failed: {e}")
             return []
 
     def _apply_filters(
@@ -98,21 +143,12 @@ class HotelService:
         """Apply search filters to hotels"""
         filtered_hotels = hotels
 
-        # Price filter
-        if search_request.max_price:
-            filtered_hotels = [
-                h
-                for h in filtered_hotels
-                if h.price_per_night <= search_request.max_price
-            ]
-
-        # Rating filter
-        if search_request.min_rating:
-            filtered_hotels = [
-                h
-                for h in filtered_hotels
-                if h.rating and h.rating >= search_request.min_rating
-            ]
+        # Filter out hotels with invalid prices (0 or negative)
+        filtered_hotels = [
+            h
+            for h in filtered_hotels
+            if h.price_per_night > 0 and h.currency and h.currency.strip() != ""
+        ]
 
         return filtered_hotels
 

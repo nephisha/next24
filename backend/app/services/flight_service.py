@@ -254,6 +254,13 @@ class FlightService:
         """Apply search filters to flights"""
         filtered_flights = flights
 
+        # Filter out flights with invalid prices (0 or negative)
+        filtered_flights = [
+            f
+            for f in filtered_flights
+            if f.price > 0 and f.currency and f.currency.strip() != ""
+        ]
+
         # Price filter
         if search_request.max_price:
             filtered_flights = [

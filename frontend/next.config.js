@@ -6,7 +6,6 @@ const nextConfig = {
       optimizeCss: true,
     },
     images: {
-      domains: ['images.unsplash.com', 'logos-download.com', 'picsum.photos'],
       remotePatterns: [
         {
           protocol: 'https',
@@ -17,6 +16,12 @@ const nextConfig = {
         {
           protocol: 'https',
           hostname: 'picsum.photos',
+          port: '',
+          pathname: '/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'logos-download.com',
           port: '',
           pathname: '/**',
         },

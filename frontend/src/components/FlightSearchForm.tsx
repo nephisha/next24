@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -30,10 +30,17 @@ const flightSearchSchema = z.object({
 interface FlightSearchFormProps {
     onSearch: (params: FlightSearchParams) => void
     isLoading?: boolean
+    initialValues?: FlightSearchParams | null
+    redirectToResults?: boolean
 }
 
-export default function FlightSearchForm({ onSearch, isLoading = false }: FlightSearchFormProps) {
-    const [isRoundTrip, setIsRoundTrip] = useState(false)
+export default function FlightSearchForm({
+    onSearch,
+    isLoading = false,
+    initialValues = null,
+    redirectToResults = false
+}: FlightSearchFormProps) {
+    const [isRoundTrip, setIsRoundTrip] = useState(true)
     const { minDate, maxDate, defaultDeparture, defaultReturn } = getDateLimits()
 
     const {
@@ -44,9 +51,9 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
         formState: { errors },
     } = useForm<FlightSearchParams>({
         resolver: zodResolver(flightSearchSchema),
-        defaultValues: {
+        defaultValues: initialValues || {
             departure_date: defaultDeparture,
-            return_date: '', // Start with empty return date for one-way
+            return_date: defaultReturn, // Default return date for round trip
             adults: 1,
             children: 0,
             infants: 0,
@@ -61,7 +68,28 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
             return_date: isRoundTrip ? data.return_date : undefined,
             direct_flights_only: false // Default to false since we removed the checkbox
         }
-        onSearch(searchData)
+
+        if (redirectToResults) {
+            // Redirect to flights page with search params
+            const params = new URLSearchParams({
+                origin: searchData.origin,
+                destination: searchData.destination,
+                departure_date: searchData.departure_date,
+                adults: searchData.adults.toString(),
+                children: searchData.children.toString(),
+                infants: searchData.infants.toString(),
+                cabin_class: searchData.cabin_class,
+                direct_flights_only: searchData.direct_flights_only?.toString() || 'false'
+            })
+
+            if (searchData.return_date) {
+                params.set('return_date', searchData.return_date)
+            }
+
+            window.location.href = `/flights?${params.toString()}`
+        } else {
+            onSearch(searchData)
+        }
     }
 
     return (

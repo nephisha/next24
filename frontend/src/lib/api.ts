@@ -146,3 +146,40 @@ export const useGuides = () => {
     getByCategory: (category: string) => apiClient.getGuidesByCategory(category),
   };
 };
+
+// Import types for search functions
+import type { FlightSearchParams, FlightSearchResponse, HotelSearchParams, HotelSearchResponse } from '@/types';
+
+// Flight search function
+export async function searchFlights(params: FlightSearchParams): Promise<FlightSearchResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/flights/search`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Flight search failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+// Hotel search function
+export async function searchHotels(params: HotelSearchParams): Promise<HotelSearchResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/hotels/search`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Hotel search failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}

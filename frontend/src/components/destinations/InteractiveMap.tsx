@@ -194,10 +194,10 @@ export default function InteractiveMap({ destination, center, points }: Interact
             <Star
                 key={i}
                 className={`w-4 h-4 ${i < Math.floor(rating)
-                        ? 'text-yellow-400 fill-current'
-                        : i < rating
-                            ? 'text-yellow-400 fill-current opacity-50'
-                            : 'text-gray-300'
+                    ? 'text-yellow-400 fill-current'
+                    : i < rating
+                        ? 'text-yellow-400 fill-current opacity-50'
+                        : 'text-gray-300'
                     }`}
             />
         ));
@@ -226,8 +226,8 @@ export default function InteractiveMap({ destination, center, points }: Interact
                         key={type.id}
                         onClick={() => handleTypeFilter(type.id)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${selectedType === type.id
-                                ? 'bg-blue-100 text-blue-800 border-blue-300'
-                                : 'text-gray-600 hover:bg-gray-50'
+                            ? 'bg-blue-100 text-blue-800 border-blue-300'
+                            : 'text-gray-600 hover:bg-gray-50'
                             }`}
                     >
                         {type.icon}
@@ -271,8 +271,8 @@ export default function InteractiveMap({ destination, center, points }: Interact
                                 key={point.id}
                                 onClick={() => handlePointClick(point)}
                                 className={`p-4 rounded-lg border cursor-pointer transition-colors ${selectedPoint?.id === point.id
-                                        ? 'border-blue-300 bg-blue-50'
-                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                    ? 'border-blue-300 bg-blue-50'
+                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
                                 <div className="flex items-start gap-3">

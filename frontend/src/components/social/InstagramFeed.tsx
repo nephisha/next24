@@ -29,12 +29,14 @@ interface SocialPost {
 
 interface InstagramFeedProps {
     feedType?: string;
+    hashtags?: string[];
     limit?: number;
     className?: string;
 }
 
 export default function InstagramFeed({
     feedType = "homepage",
+    hashtags = [],
     limit = 12,
     className = ""
 }: InstagramFeedProps) {

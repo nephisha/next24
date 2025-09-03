@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc, func
 from ..models.destinations import Destination, DestinationPricing, TravelGuide
 from ..database import get_db
-from ..config.railway import railway_settings
+from ..config import settings
 import requests
 import redis
 import json
@@ -11,14 +11,16 @@ from datetime import datetime, timedelta
 import hashlib
 
 # Redis client for Railway
-redis_client = redis.from_url(
-    railway_settings.internal_redis_url,
-    decode_responses=True,
-    socket_connect_timeout=5,
-    socket_timeout=5,
-    retry_on_timeout=True,
-    health_check_interval=30,
-)
+redis_client = None
+if settings.redis_url:
+    redis_client = redis.from_url(
+        settings.redis_url,
+        decode_responses=True,
+        socket_connect_timeout=5,
+        socket_timeout=5,
+        retry_on_timeout=True,
+        health_check_interval=30,
+    )
 
 
 class DestinationService:

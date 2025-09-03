@@ -52,7 +52,7 @@ export default function HomePage() {
 
     return (
         <>
-            {/* Hero Section - Stunning Travel-Themed Design */}
+            {/* Hero Section - Search Form Left, Hero Content Right */}
             <section className="relative min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 overflow-hidden">
                 {/* Animated Background */}
                 <div className="absolute inset-0">
@@ -77,8 +77,46 @@ export default function HomePage() {
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center min-h-screen">
-                        {/* Left Column - Hero Content */}
-                        <div className="space-y-8 text-center lg:text-left">
+                        {/* Left Column - Search Form (appears first on mobile) */}
+                        <div className="relative order-1 lg:order-1" id="search-section">
+                            {/* Glassmorphism Search Card */}
+                            <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 relative overflow-hidden">
+                                {/* Card Glow Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent rounded-3xl"></div>
+
+                                <div className="relative z-10">
+                                    <div className="text-center mb-6">
+                                        <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
+                                        <p className="text-blue-200">Find the perfect flight for your next adventure</p>
+                                    </div>
+
+                                    <SearchTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+                                    <div className="mt-6">
+                                        {activeTab === 'flights' ? (
+                                            <FlightSearchForm
+                                                onSearch={handleFlightSearch}
+                                                isLoading={isLoading}
+                                                redirectToResults={true}
+                                            />
+                                        ) : (
+                                            <HotelSearchForm
+                                                onSearch={handleHotelSearch}
+                                                isLoading={isLoading}
+                                                redirectToResults={true}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Floating Decorative Elements */}
+                            <div className="absolute -top-6 -right-6 w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-60 animate-bounce"></div>
+                            <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-40 animate-pulse"></div>
+                        </div>
+
+                        {/* Right Column - Hero Content (appears second on mobile) */}
+                        <div className="space-y-8 text-center lg:text-left order-2 lg:order-2">
                             {/* Brand Badge */}
                             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
                                 <Sparkles className="w-4 h-4 text-yellow-400" />
@@ -160,36 +198,6 @@ export default function HomePage() {
                                     Explore Destinations
                                 </Link>
                             </div>
-                        </div>
-
-                        {/* Right Column - Search Form */}
-                        <div className="relative" id="search-section">
-                            {/* Glassmorphism Search Card */}
-                            <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 relative overflow-hidden">
-                                {/* Card Glow Effect */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent rounded-3xl"></div>
-
-                                <div className="relative z-10">
-                                    <div className="text-center mb-6">
-                                        <h3 className="text-2xl font-bold text-white mb-2">Start Your Journey</h3>
-                                        <p className="text-blue-200">Find the perfect flight for your next adventure</p>
-                                    </div>
-
-                                    <SearchTabs activeTab={activeTab} onTabChange={setActiveTab} />
-
-                                    <div className="mt-6">
-                                        {activeTab === 'flights' ? (
-                                            <FlightSearchForm onSearch={handleFlightSearch} isLoading={isLoading} />
-                                        ) : (
-                                            <HotelSearchForm onSearch={handleHotelSearch} isLoading={isLoading} />
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Floating Decorative Elements */}
-                            <div className="absolute -top-6 -right-6 w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-60 animate-bounce"></div>
-                            <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-40 animate-pulse"></div>
                         </div>
                     </div>
                 </div>

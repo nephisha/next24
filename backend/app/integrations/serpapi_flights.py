@@ -362,11 +362,24 @@ class SerpAPIFlights:
         try:
             # Extract basic flight info
             price = flight_data.get("price", 0)
+
+            # Validate price - skip flights with invalid prices
+            if not price or price <= 0:
+                logger.debug(f"Skipping flight with invalid price: {price}")
+                return None
+
             # Use currency based on origin airport (same as what we sent to SerpAPI)
             currency = get_airport_currency(search_request.origin)
 
+            if not currency or currency.strip() == "":
+                logger.debug(f"Skipping flight with invalid currency: {currency}")
+                return None
+
             # Extract total duration
             total_duration = flight_data.get("total_duration", 0)
+            if total_duration <= 0:
+                logger.debug(f"Skipping flight with invalid duration: {total_duration}")
+                return None
 
             # Extract flights (segments)
             flight_segments = flight_data.get("flights", [])
@@ -388,7 +401,12 @@ class SerpAPIFlights:
 
             # Generate flight ID using first segment's flight number
             first_segment = segments[0]
-            flight_id = f"serpapi_{first_segment.flight_number.replace(' ', '_')}_{search_request.departure_date}"
+            flight_number = (
+                first_segment.flight_number.replace(" ", "_")
+                if first_segment.flight_number
+                else "unknown"
+            )
+            flight_id = f"serpapi_{flight_number}_{search_request.departure_date}"
 
             return Flight(
                 id=flight_id,

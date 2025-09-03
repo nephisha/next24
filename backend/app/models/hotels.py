@@ -13,20 +13,12 @@ class HotelSearchRequest(BaseModel):
     adults: int = Field(1, ge=1, le=30, description="Number of adult guests")
     children: int = Field(0, ge=0, le=30, description="Number of child guests")
     rooms: int = Field(1, ge=1, le=30, description="Number of rooms")
-    max_price: Optional[float] = Field(
-        None, gt=0, description="Maximum price per night"
-    )
-    min_rating: Optional[float] = Field(
-        None, ge=0, le=5, description="Minimum hotel rating"
-    )
 
     @validator("check_in")
-    def check_in_must_be_today_or_tomorrow(cls, v):
+    def check_in_must_be_future(cls, v):
         today = date.today()
-        if v < today or v > today.replace(day=today.day + 1):
-            raise ValueError(
-                "Check-in date must be today or tomorrow for last-minute deals"
-            )
+        if v < today:
+            raise ValueError("Check-in date cannot be in the past")
         return v
 
     @validator("check_out")
@@ -83,7 +75,7 @@ class Hotel(BaseModel):
     provider: str = Field(..., description="Data provider")
     cancellation_policy: Optional[str] = None
     breakfast_included: bool = False
-    last_updated: datetime = Field(default_factory=datetime.utcnow)
+    last_updated: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
 
 class HotelSearchResponse(BaseModel):

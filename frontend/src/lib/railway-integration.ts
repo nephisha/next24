@@ -49,6 +49,12 @@ export const getCachedGuides = unstable_cache(
 export const runtime = 'edge';
 
 // Vercel Analytics integration
+declare global {
+    interface Window {
+        va?: (event: string, name: string, data?: any) => void;
+    }
+}
+
 export function trackDestinationView(destinationId: string, country: string, city: string) {
     if (typeof window !== 'undefined' && window.va) {
         window.va('track', 'Destination View', {

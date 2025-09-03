@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
-from typing import Generator
+from typing import Generator, Optional
+from supabase import create_client, Client
 
 # Database URL from environment (Railway will provide this)
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost/travel_db")
@@ -25,6 +26,23 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+# Supabase client (optional)
+supabase: Optional[Client] = None
+
+# Initialize Supabase client if credentials are provided
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+
+if SUPABASE_URL and SUPABASE_ANON_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+        print("✅ Supabase client initialized")
+    except Exception as e:
+        print(f"⚠️ Supabase initialization failed: {e}")
+        supabase = None
+else:
+    print("⚠️ Supabase credentials not provided - logging disabled")
+
 
 def get_db() -> Generator:
     """Database dependency for FastAPI"""
@@ -44,8 +62,10 @@ def create_tables():
 def check_database_connection():
     """Check if database connection is working"""
     try:
+        from sqlalchemy import text
+
         db = SessionLocal()
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         db.close()
         print("✅ Database connection successful")
         return True

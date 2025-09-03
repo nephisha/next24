@@ -8,13 +8,13 @@ import io
 import hashlib
 from datetime import datetime
 import os
-from ..config.railway import railway_settings
+from ..config import settings
 
 # Configure Cloudinary
 cloudinary.config(
-    cloud_name=railway_settings.cloudinary_cloud_name,
-    api_key=railway_settings.cloudinary_api_key,
-    api_secret=railway_settings.cloudinary_api_secret,
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True,
 )
 

@@ -17,12 +17,12 @@ from ..models.social import (
 from ..services.media_service import media_service, moderation_service
 from ..database import get_db
 import redis
-from ..config.railway import railway_settings
+from ..config import settings
 
 # Redis client for caching
-redis_client = redis.from_url(
-    railway_settings.internal_redis_url, decode_responses=True
-)
+redis_client = None
+if settings.redis_url:
+    redis_client = redis.from_url(settings.redis_url, decode_responses=True)
 
 
 class SocialMediaService:

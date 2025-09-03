@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
 
     # Database
+    database_url: Optional[str] = None
     supabase_url: Optional[str] = None
     supabase_anon_key: Optional[str] = None
 

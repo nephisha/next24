@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Plane, MapPin, BookOpen, Calendar, Users, Menu, X } from 'lucide-react';
+import { Plane, MapPin, BookOpen, Calendar, Users, Menu, X, Building2 } from 'lucide-react';
 import { useState } from 'react';
 
 const navigation = [
-    { name: 'Flights', href: '/', icon: Plane },
+    { name: 'Flights', href: '/flights', icon: Plane },
+    { name: 'Hotels', href: '/hotels', icon: Building2 },
     { name: 'Destinations', href: '/destinations', icon: MapPin },
     { name: 'Guides', href: '/guides', icon: BookOpen },
     { name: 'Planner', href: '/planner', icon: Calendar },
