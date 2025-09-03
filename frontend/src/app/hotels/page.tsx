@@ -99,7 +99,7 @@ export default function HotelsPage() {
         if (filters.amenities && filters.amenities.length > 0) {
             filteredHotels = filteredHotels.filter(hotel =>
                 filters.amenities.some((amenity: string) =>
-                    hotel.amenities?.some(hotelAmenity => hotelAmenity === amenity)
+                    hotel.amenities?.some(hotelAmenity => hotelAmenity.name === amenity)
                 )
             )
         }
