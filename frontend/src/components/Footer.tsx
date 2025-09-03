@@ -93,7 +93,7 @@ export default function Footer() {
                             © {currentYear} Next24. All rights reserved.
                         </p>
                         <p className="text-gray-400 text-sm mt-2 md:mt-0">
-                            Powered by Kiwi.com, Skyscanner & Booking.com APIs
+                            Next24 - AI powered travel platform
                         </p>
                     </div>
                 </div>
