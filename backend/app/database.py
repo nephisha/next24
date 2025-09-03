@@ -86,8 +86,24 @@ def get_db() -> Generator:
 
 def create_tables():
     """Create all database tables"""
-    Base.metadata.create_all(bind=engine)
+    # Import all models to ensure they're registered with their Base classes
+    from app.models.destinations import Base as DestinationBase
+    from app.models.social import Base as SocialBase
+
+    # Create tables for all models
+    DestinationBase.metadata.create_all(bind=engine)
+    SocialBase.metadata.create_all(bind=engine)
+
     print("✅ Database tables created successfully")
+    print("📊 Tables created:")
+    print("   - destinations")
+    print("   - destination_pricing")
+    print("   - travel_guides")
+    print("   - social_media_posts")
+    print("   - user_generated_content")
+    print("   - photo_contests")
+    print("   - social_media_feeds")
+    print("   - content_moderation_logs")
 
 
 def check_database_connection():
