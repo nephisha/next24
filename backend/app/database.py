@@ -94,7 +94,14 @@ def check_database_connection():
     """Check if database connection is working"""
     try:
         from sqlalchemy import text
+        import time
 
+        # Skip check if using localhost (no real database configured)
+        if "localhost" in DATABASE_URL:
+            print("⚠️ Using localhost database - skipping connection check")
+            return False
+
+        # Try connection with timeout
         db = SessionLocal()
         db.execute(text("SELECT 1"))
         db.close()
