@@ -1,20 +1,12 @@
 #!/bin/bash
-# Railway startup script
 
-set -e
+# Railway startup script for Next24 Backend
+echo "Starting Next24 Backend on Railway..."
 
-echo "🚀 Starting Railway deployment..."
+# Set default port if not provided
+PORT=${PORT:-8000}
 
-# Run database migrations
-echo "📊 Running database migrations..."
-alembic upgrade head
+echo "Using port: $PORT"
 
-# Start the application with Railway-optimized settings
-echo "🌐 Starting FastAPI application..."
-exec uvicorn app.main:app \
-    --host 0.0.0.0 \
-    --port ${PORT:-8000} \
-    --workers ${WEB_CONCURRENCY:-1} \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --access-log \
-    --log-level info
+# Start the application
+exec uvicorn app.main:app --host 0.0.0.0 --port $PORT

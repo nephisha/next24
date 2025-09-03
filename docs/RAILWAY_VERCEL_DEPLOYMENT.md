@@ -1,4 +1,36 @@
-# Railway + Vercel + Redis Deployment Strategy
+# Railway + Vercel Deployment Guide - FIXED
+
+## 🚨 DEPLOYMENT FIXES
+
+### ❌ Common Error: "Invalid value for '--port': '$PORT' is not a valid integer"
+
+**Problem**: Railway can't parse the `$PORT` environment variable in the Docker CMD.
+
+**Solution**: Use the fixed `backend/Dockerfile.railway` and `backend/railway-start.sh` script.
+
+### ❌ Common Error: Vercel Build Timeout
+
+**Problem**: Frontend build takes too long or fails.
+
+**Solutions**:
+1. Ensure `NEXT_PUBLIC_API_URL` is set correctly
+2. Check for TypeScript errors: `npm run type-check`
+3. Increase function timeout in `vercel.json`
+
+### ✅ Quick Fix Checklist
+
+**Railway Backend**:
+- [ ] Use `Dockerfile.railway` (not regular Dockerfile)
+- [ ] Set `PORT=8000` in Railway environment variables
+- [ ] Set `PYTHONUNBUFFERED=1` and `PYTHONDONTWRITEBYTECODE=1`
+- [ ] Configure `railway.json` with `"builder": "DOCKERFILE"`
+- [ ] Set correct `ALLOWED_ORIGINS` for CORS
+
+**Vercel Frontend**:
+- [ ] Set `NEXT_PUBLIC_API_URL` to your Railway app URL
+- [ ] Ensure `vercel.json` is properly configured
+- [ ] Build directory is set to `frontend/`
+- [ ] No TypeScript errors in build
 
 ## 🏗️ Architecture Overview
 
@@ -14,43 +46,134 @@
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🚀 Deployment Steps
+## 🚀 FIXED Deployment Steps
 
-### 1. Railway Backend Setup
+### 1. Railway Backend Setup (FIXED)
 
 ```bash
 # 1. Create Railway project
 railway login
-railway new travel-backend
+railway new next24-backend
 
-# 2. Add PostgreSQL database
+# 2. Connect your GitHub repository
+# Go to Railway dashboard and connect the backend folder
+
+# 3. Add PostgreSQL database
 railway add postgresql
 
-# 3. Add Redis
+# 4. Add Redis
 railway add redis
 
-# 4. Set environment variables
-railway variables set ENVIRONMENT=production
+# 5. Set environment variables (CRITICAL)
+railway variables set PORT=8000
+railway variables set PYTHONUNBUFFERED=1
+railway variables set PYTHONDONTWRITEBYTECODE=1
 railway variables set DATABASE_URL=${{Postgres.DATABASE_URL}}
 railway variables set REDIS_URL=${{Redis.REDIS_URL}}
+railway variables set SERPAPI_KEY=your_serpapi_key_here
+railway variables set ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
 
-# 5. Deploy
-railway up
+# 6. Configure build settings
+# In Railway dashboard:
+# - Root Directory: backend
+# - Build Command: (leave empty - uses Dockerfile)
+# - Start Command: (leave empty - uses Dockerfile CMD)
+
+# 7. Deploy
+railway up --detach
 ```
 
-### 2. Vercel Frontend Setup
+### Railway Configuration Files (REQUIRED)
+
+Make sure these files exist in your `backend/` directory:
+
+1. **backend/railway.json** (FIXED):
+```json
+{
+    "$schema": "https://railway.app/railway.schema.json",
+    "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "Dockerfile.railway"
+    },
+    "deploy": {
+        "healthcheckPath": "/health",
+        "healthcheckTimeout": 100,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+    }
+}
+```
+
+2. **backend/railway-start.sh** (FIXED):
+```bash
+#!/bin/bash
+PORT=${PORT:-8000}
+echo "Starting Next24 Backend on port: $PORT"
+exec uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+3. **backend/Dockerfile.railway** (FIXED - handles PORT properly)
+
+### 2. Vercel Frontend Setup (FIXED)
 
 ```bash
 # 1. Install Vercel CLI
 npm i -g vercel
 
-# 2. Deploy to Vercel
+# 2. Navigate to frontend directory
+cd frontend
+
+# 3. Deploy to Vercel
 vercel --prod
 
-# 3. Set environment variables
+# 4. Set environment variables
 vercel env add NEXT_PUBLIC_API_URL production
-# Enter your Railway backend URL: https://your-app.railway.app
+# Enter your Railway backend URL: https://your-railway-app.railway.app
+
+# 5. Redeploy to apply environment variables
+vercel --prod
 ```
+
+### Vercel Configuration (REQUIRED)
+
+Update `frontend/vercel.json`:
+```json
+{
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "framework": "nextjs",
+    "regions": ["iad1", "fra1", "hnd1"],
+    "functions": {
+        "app/**/*.tsx": {
+            "maxDuration": 30
+        }
+    },
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-Frame-Options", 
+                    "value": "DENY"
+                }
+            ]
+        }
+    ]
+}
+```
+
+### Environment Variables for Vercel
+
+In Vercel Dashboard → Settings → Environment Variables:
+
+| Variable | Value | Environment |
+|----------|-------|-------------|
+| `NEXT_PUBLIC_API_URL` | `https://your-railway-app.railway.app` | Production |
+| `NODE_ENV` | `production` | Production |
 
 ### 3. Environment Variables
 
