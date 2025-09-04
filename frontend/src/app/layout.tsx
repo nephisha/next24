@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-    title: 'Next24 - Compare Flights from 600+ Airlines Worldwide',
+    title: 'Next24 — Smarter Flight Search & Planning',
     description: 'Search and compare flights from 600+ airlines worldwide with real-time prices in your local currency. Find your perfect flight deal with Next24.',
     keywords: 'Next24, flight search, compare flights, airline tickets, flight booking, travel search, flight deals, cheap flights',
     authors: [{ name: 'Next24' }],
@@ -24,13 +24,13 @@ export const metadata: Metadata = {
                 url: '/og-image.jpg',
                 width: 1200,
                 height: 630,
-                alt: 'Next24 - Compare Flights Worldwide',
+                alt: 'NNext24 — Smarter Flight Search & Planning',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Next24 - Compare Flights from 600+ Airlines',
+        title: 'Next24 — Smarter Flight Search & Planning',
         description: 'Search and compare flights worldwide with real-time prices - Next24',
         images: ['/og-image.jpg'],
     },
