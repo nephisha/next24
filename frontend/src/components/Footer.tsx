@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import SiteLockSeal from './SiteLockSeal'
 
 export default function Footer() {
     const currentYear = new Date().getFullYear()
@@ -95,6 +96,9 @@ export default function Footer() {
                         <p className="text-gray-400 text-sm mt-2 md:mt-0">
                             Next24 - AI powered travel platform
                         </p>
+                    </div>
+                    <div className="mx-auto max-w-7xl px-4 py-6 flex items-center justify-end">
+                        <SiteLockSeal />
                     </div>
                 </div>
             </div>

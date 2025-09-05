@@ -4,7 +4,8 @@ import './globals.css'
 import Script from 'next/script'
 import Header from '@/components/Header'
 import { Analytics } from '@vercel/analytics/react'            // ← NEW
-import { SpeedInsights } from '@vercel/speed-insights/next'    // ← NEW (optional)
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import SiteLockSeal from '@/components/SiteLockSeal'   // ← NEW (optional)
 
 const inter = Inter({ subsets: ['latin'] })
 
