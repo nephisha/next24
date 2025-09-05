@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Script from 'next/script'
 import Header from '@/components/Header'
+import { Analytics } from '@vercel/analytics/react'            // ← NEW
+import { SpeedInsights } from '@vercel/speed-insights/next'    // ← NEW (optional)
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +26,7 @@ export const metadata: Metadata = {
                 url: '/og-image.jpg',
                 width: 1200,
                 height: 630,
-                alt: 'NNext24 — Smarter Flight Search & Planning',
+                alt: 'Next24 — Smarter Flight Search & Planning', // ← fixed small typo
             },
         ],
     },
@@ -41,11 +43,7 @@ export const viewport = {
     initialScale: 1,
 }
 
-export default function RootLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
             <head>
@@ -55,13 +53,13 @@ export default function RootLayout({
                     strategy="afterInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `
-                (function () {
-                    var script = document.createElement("script");
-                    script.async = 1;
-                    script.src = 'https://tp-em.com/NDM5NDA2.js?t=439406';
-                    document.head.appendChild(script);
-                })();
-                `
+              (function () {
+                var script = document.createElement("script");
+                script.async = 1;
+                script.src = 'https://tp-em.com/NDM5NDA2.js?t=439406';
+                document.head.appendChild(script);
+              })();
+            `
                     }}
                 />
             </head>
@@ -72,6 +70,10 @@ export default function RootLayout({
                         {children}
                     </main>
                 </div>
+
+                {/* Global analytics (safe to include in a Server Component layout) */}
+                <Analytics />
+                <SpeedInsights /> {/* optional, remove if you don’t want performance telemetry */}
             </body>
         </html>
     )
