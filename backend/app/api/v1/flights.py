@@ -15,11 +15,11 @@ async def search_flights(
     search_request: FlightSearchRequest, _: dict = Depends(validate_search_params)
 ):
     """
-    Search for last-minute flight deals
+    Search for flight deals
 
     - **origin**: IATA airport code (e.g., 'NYC', 'LAX')
     - **destination**: IATA airport code (e.g., 'LON', 'PAR')
-    - **departure_date**: Today or tomorrow only for last-minute deals
+    - **departure_date**:
     - **return_date**: Optional return date (must be after departure)
     - **adults**: Number of adult passengers (1-9)
     - **children**: Number of child passengers (0-9)

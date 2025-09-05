@@ -22,7 +22,7 @@ class BookingAPI:
         self.api_key = settings.booking_api_key
         self.headers = {
             "accept": "application/json",
-            "User-Agent": "LastMinuteTravel/1.0",
+            "User-Agent": "Next24-Platform/1.0",
         }
 
     async def search_hotels(self, search_request: HotelSearchRequest) -> List[Hotel]:

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# LastMinute Travel - Docker Startup Script
-
-echo "🚀 Starting LastMinute Travel with Docker..."
+echo "🚀 Starting Next24 Platform with Docker..."
 echo ""
 
 # Check if Docker is running

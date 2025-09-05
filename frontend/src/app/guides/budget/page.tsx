@@ -29,7 +29,7 @@ const budgetCategories = [
             'Book directly with hotels for potential upgrades and perks',
             'Consider longer stays for weekly/monthly discounts',
             'Use loyalty programs and credit card points',
-            'Check for last-minute deals on booking apps'
+            'Check for deals on booking apps'
         ]
     },
     {

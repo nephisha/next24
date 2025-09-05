@@ -107,7 +107,7 @@ app.include_router(social.router, tags=["social"])
 # ─────────────────────────────
 @app.get("/")
 async def root():
-    return {"message": "LastMinute Travel API", "version": "1.0.0"}
+    return {"message": "Next24 Platform API", "version": "1.0.0"}
 
 
 @app.get("/health")

@@ -6,7 +6,7 @@ import os
 
 class Settings(BaseSettings):
     # App Settings
-    app_name: str = "LastMinute Travel API"
+    app_name: str = "Next24 Platform API"
     debug: bool = False
     api_v1_prefix: str = "/api/v1"
 

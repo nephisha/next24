@@ -15,11 +15,11 @@ async def search_hotels(
     search_request: HotelSearchRequest, _: dict = Depends(validate_search_params)
 ):
     """
-    Search for last-minute hotel deals
+    Search for hotel deals
 
     - **destination**: City name or location
     - **latitude/longitude**: Optional coordinates for precise location
-    - **check_in**: Today or tomorrow only for last-minute deals
+    - **check_in**:
     - **check_out**: Check-out date (must be after check-in)
     - **adults**: Number of adult guests (1-30)
     - **children**: Number of child guests (0-30)
